@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest a capability Folio Motion does not have yet
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the situation, not the implementation. "I cannot tell whether a curve will jank" is more useful than "add a FPS meter".
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would want to be able to do
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area?
+      options:
+        - The physics engine
+        - Exports
+        - The agent / MCP interface
+        - Persistence and sharing
+        - Visual design or motion on the site
+        - Something else
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints this must respect
+      options:
+        - label: Must stay deterministic and unit-testable
+        - label: Must work with no API key or external service
+        - label: Must respect prefers-reduced-motion
+        - label: Must not add a runtime dependency without discussion

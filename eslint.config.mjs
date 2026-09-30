@@ -13,6 +13,7 @@ const eslintConfig = [
       "playwright-report/**",
       "test-results/**",
       "next-env.d.ts",
+      "e2e/**",
     ],
   },
   ...nextCoreWebVitals,

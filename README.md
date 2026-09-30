@@ -187,6 +187,8 @@ replayable.
   honestly labelled fallback.
 - **Reduced motion respected** — every animated affordance has a static
   equivalent, and the exports emit the CSS fallback for you.
+- **Browser-tested** — 17 Playwright tests drive the real UI on desktop and
+  mobile viewports, and fail on any uncaught console error.
 - **Zero required environment variables** — clone, `npm install`, `npm run dev`.
 
 ## Stack
@@ -235,9 +237,18 @@ start.
 | `npm run build` | Production build |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
-| `npm test` | Vitest |
-| `npm run verify:live` | 65 real HTTP checks against a deployed URL |
-| `npm run check` | All of the above, in order |
+| `npm test` | Vitest — 76 unit tests |
+| `npm run test:e2e` | Playwright — the primary journey in a real browser |
+| `npm run verify:live` | 66 real HTTP checks against a deployed URL |
+| `npm run check` | Typecheck, lint, tests and build, in order |
+
+The browser tests use the system Edge channel so no Chromium download is
+needed. Set `FM_BROWSER=chromium` to use Playwright's own build, and
+`FM_BASE_URL` to point at a different deployment:
+
+```bash
+FM_BASE_URL=http://localhost:3000 npm run test:e2e
+```
 
 ## Project map
 

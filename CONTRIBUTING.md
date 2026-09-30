@@ -31,6 +31,16 @@ typecheck fails, fix the code — do not add a suppression comment to get to
 green. The exception is a genuine false positive in the React Compiler rules,
 which is worth explaining in the PR description.
 
+If your change touches a page, also run the browser journey:
+
+```bash
+npm run test:e2e                                    # against production
+FM_BASE_URL=http://localhost:3000 npm run test:e2e  # against your dev server
+```
+
+Those tests fail on any uncaught console error, so a change that renders but
+throws will not pass.
+
 ## Where things live
 
 | Path | What belongs there |
@@ -43,6 +53,8 @@ which is worth explaining in the PR description.
 | `src/app/api/**` | Thin HTTP wrappers over `service.ts`. No business logic. |
 | `src/components/**` | Presentation. Client components only for interaction. |
 | `tests/**` | Vitest. Every engine and integrity change needs a test. |
+| `e2e/**` | Playwright. The primary journey, desktop and mobile. |
+| `scripts/verify-live.mjs` | Real HTTP proof against a deployment. |
 
 ## Rules that are actually enforced
 
