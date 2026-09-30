@@ -11,7 +11,10 @@ import { defineConfig, devices } from "@playwright/test";
  * FM_BROWSER=chromium to use Playwright's own build instead.
  */
 const channel = process.env.FM_BROWSER === "chromium" ? undefined : "msedge";
-const baseURL = process.env.FM_BASE_URL ?? "https://folio-motion.vercel.app";
+// `||` not `??`: CI sets FM_BASE_URL to an empty string when the repository
+// variable is unset, and an empty baseURL makes every navigation fail with
+// "Cannot navigate to invalid URL".
+const baseURL = process.env.FM_BASE_URL || "https://folio-motion.vercel.app";
 
 export default defineConfig({
   testDir: "./e2e",

@@ -12,6 +12,20 @@ updates:
       - security
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # eslint 10 is ahead of the plugin peer ranges that eslint-config-next
+      # still depends on (eslint-plugin-import, eslint-plugin-jsx-a11y,
+      # eslint-plugin-react and typescript-eslint all cap at 9), so bumping it
+      # fails lint. Revisit when Next's config moves to flat-config-native
+      # plugins.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+        versions: [">=10"]
+      # TypeScript 7 is the native compiler; typescript-eslint declares
+      # ">=4.8.4 <6.1.0" and the ESLint type-aware rules stop resolving types.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+        versions: [">=7"]
     groups:
       # Keep the framework trio together; splitting it creates broken states.
       next:
