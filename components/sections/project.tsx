@@ -1,267 +1,206 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { FaChevronRight, FaGithub, FaExternalLinkAlt } from "react-icons/fa";
-import { Project, projects } from "@/data/projects";
-import Image from "next/image";
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { FaChevronRight, FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
+type Project = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  color: string;
+  textColor: string;
+  details: string;
+  technologies: string[];
+  github: string;
+  live: string;
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 35 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.55,
-      ease: "easeOut",
-    },
+const projects: Project[] = [
+  {
+    id: 1,
+    title: "AI-Powered Task Manager",
+    description: "An intelligent task management system that uses machine learning to prioritize and categorize tasks.",
+    image: "https://tinyurl.com/226ofh39",
+    color: "from-blue-500 to-purple-600",
+    textColor: "text-blue-100",
+    details: "This project leverages natural language processing to understand task descriptions and automatically assign priorities. It also includes a smart scheduling feature that optimizes your daily workflow.",
+    technologies: ["React", "Node.js", "TensorFlow.js", "MongoDB"],
+    github: "https://github.com/yourusername/ai-task-manager",
+    live: "https://ai-task-manager.example.com"
   },
-};
+  {
+    id: 2,
+    title: "Virtual Reality Fitness App",
+    description: "A VR application that gamifies workout routines, making fitness fun and engaging for users.",
+    image: "https://tinyurl.com/25ydsheu",
+    color: "from-green-500 to-yellow-500",
+    textColor: "text-green-100",
+    details: "Users can choose from various virtual environments and workout types. The app tracks body movements using VR controllers and provides real-time feedback on form and performance.",
+    technologies: ["Unity", "C#", "Oculus SDK", "Firebase"],
+    github: "https://github.com/yourusername/vr-fitness",
+    live: "https://vr-fitness.example.com"
+  },
+  {
+    id: 3,
+    title: "Blockchain-based Supply Chain",
+    description: "A decentralized application for tracking products from manufacture to delivery, ensuring transparency and authenticity.",
+    image: "https://tinyurl.com/258xcbsc",
+    color: "from-red-500 to-pink-600",
+    textColor: "text-red-100",
+    details: "This dApp uses smart contracts to record each step of the supply chain process. It includes features like QR code scanning for instant product verification and a consumer-facing mobile app.",
+    technologies: ["Solidity", "React Native", "Web3.js", "IPFS"],
+    github: "https://github.com/yourusername/blockchain-supply-chain",
+    live: "https://blockchain-supply.example.com"
+  }
+];
 
 export function ProjectSection() {
+  // Define selectedProject state to accept Project type or null
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section
-      id="projects"
-      className="py-28 relative overflow-hidden bg-charcoal"
-    >
-      {/* Sleek Minimal Section Divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[1px] bg-gradient-to-r from-transparent via-crimson/35 to-transparent" />
-
-      {/* Cinematic Ambient Lava / Sunset Radial Light */}
-      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-crimson/12 rounded-full filter blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-[550px] h-[550px] bg-cream-gold/8 rounded-full filter blur-[150px] pointer-events-none" />
-
-      <div className="container mx-auto px-4 z-10 relative">
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson/15 border border-crimson/30 text-cream text-xs font-semibold uppercase tracking-wider mb-3"
-          >
-            <span>Portfolio Highlights</span>
-          </motion.div>
-
-          <motion.h2
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 text-gradient-crimson-cream"
-          >
-            Featured Projects
-          </motion.h2>
-
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ delay: 0.1, duration: 0.55, ease: "easeOut" }}
-            className="text-base sm:text-lg text-[#d4c5ba]"
-          >
-            Production-grade AI platforms, computer vision proctoring systems, and interactive
-            full-stack web applications with measurable real-world outcomes.
-          </motion.p>
+    <section id="projects" className="py-24 bg-gradient-to-br from-background to-secondary/30 transition-colors duration-300 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative min-h-screen flex flex-col items-center justify-center"
+      >
+        {/* Animated background */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-gradient" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-secondary/20 to-background animate-pulse" />
         </div>
 
-        {/* Project Cards Grid with Staggered Scroll Entrance Every Time Visited */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {projects.map((project) => (
-            <motion.div
-              key={project.id}
-              variants={cardVariants}
-              whileHover={{ y: -8, transition: { duration: 0.25, ease: "easeOut" } }}
-              className="bg-charcoal-card/90 border border-charcoal-border hover:border-crimson/50 rounded-2xl shadow-xl hover:shadow-[0_10px_35px_-10px_rgba(196,30,58,0.3)] transition-all duration-300 flex flex-col justify-between overflow-hidden group"
+        <div className="container mx-auto px-4 z-10">
+          <div className="text-center mb-12">
+            <motion.h2
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
             >
-              <div>
-                {/* Project Screenshot / Visual Preview */}
-                <div className="relative w-full h-48 overflow-hidden bg-black/40 border-b border-charcoal-border">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover object-top filter brightness-[0.92] contrast-[1.05] group-hover:scale-105 group-hover:brightness-100 transition-all duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal-card via-transparent to-transparent opacity-75" />
-                </div>
+              Featured Projects
+            </motion.h2>
 
-                <div className="p-6">
-                  {/* Tech Tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-3.5">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                      <span
-                        key={tech}
-                        className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-crimson/15 text-cream border border-crimson/30"
-                      >
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+            >
+              Explore a collection of innovative projects that showcase my expertise in cutting-edge web technologies and creative problem-solving.
+            </motion.p>
+          </div>
+
+          {/* Project Cards */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {projects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                className={`bg-gradient-to-br ${project.color} p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2`}
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 + index * 0.1, duration: 0.6 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-48 object-cover rounded-t-lg mb-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
+                />
+                <motion.h3
+                  className={`text-2xl font-semibold mt-4 ${project.textColor}`}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
+                >
+                  {project.title}
+                </motion.h3>
+                <motion.p
+                  className={`mt-2 ${project.textColor} opacity-90`}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
+                >
+                  {project.description}
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
+                  className="mt-4"
+                >
+                  <Button 
+                    size="lg" 
+                    className={`group bg-white/20 hover:bg-white/30 ${project.textColor}`}
+                    onClick={() => setSelectedProject(project)} // now works fine
+                  >
+                    View Details
+                    <FaChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Project Details Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
+            <DialogContent className="sm:max-w-[625px]">
+              <DialogHeader>
+                <DialogTitle>{selectedProject.title}</DialogTitle>
+                <DialogDescription>
+                  <img 
+                    src={selectedProject.image} 
+                    alt={selectedProject.title} 
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+                  <p className="mb-4">{selectedProject.details}</p>
+                  <h4 className="font-semibold mb-2">Technologies Used:</h4>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedProject.technologies.map((tech) => (
+                      <span key={tech} className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-sm">
                         {tech}
                       </span>
                     ))}
-                    {project.technologies.length > 3 && (
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-[#baa89d] border border-white/10">
-                        +{project.technologies.length - 3}
-                      </span>
-                    )}
                   </div>
-
-                  <h3 className="text-2xl font-bold tracking-tight text-cream-soft font-display mb-2 group-hover:text-cream transition-colors">
-                    {project.title}
-                  </h3>
-
-                  <p className="text-sm leading-relaxed text-[#c2b3a8] line-clamp-3">
-                    {project.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="px-6 pb-6 pt-2 flex items-center justify-between border-t border-charcoal-border/70 mt-2">
-                <Button
-                  size="sm"
-                  className="bg-crimson/20 hover:bg-crimson text-cream hover:text-white font-medium text-xs border border-crimson/40 transition-all duration-300"
-                  onClick={() => setSelectedProject(project)}
-                >
-                  View Details
-                  <FaChevronRight className="ml-1.5 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </Button>
-
-                <div className="flex items-center space-x-2">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-cream/70 hover:text-cream hover:bg-white/5 rounded-lg transition-colors"
-                      aria-label="GitHub Repository"
-                    >
-                      <FaGithub className="h-4 w-4" />
+                  <div className="flex gap-4">
+                    <a href={selectedProject.github} target="_blank" rel="noopener noreferrer">
+                      <Button className="group bg-gray-800 text-white hover:bg-gray-700">
+                        <FaGithub className="mr-2" />
+                        GitHub
+                      </Button>
                     </a>
-                  )}
-                  {project.live && (
-                    <a
-                      href={project.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-cream/70 hover:text-cream hover:bg-white/5 rounded-lg transition-colors"
-                      aria-label="Live Demo"
-                    >
-                      <FaExternalLinkAlt className="h-3.5 w-3.5" />
+                    <a href={selectedProject.live} target="_blank" rel="noopener noreferrer">
+                      <Button className="group bg-blue-600 text-white hover:bg-blue-500">
+                        <FaExternalLinkAlt className="mr-2" />
+                        Live Demo
+                      </Button>
                     </a>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Project Details Modal */}
-        <Dialog
-          open={!!selectedProject}
-          onOpenChange={(open) => !open && setSelectedProject(null)}
-        >
-          {selectedProject && (
-            <DialogContent className="max-w-2xl bg-charcoal-card border-charcoal-border text-cream-soft sm:rounded-2xl shadow-2xl">
-              <DialogHeader>
-                <div className="relative w-full h-56 rounded-xl overflow-hidden mb-4 bg-black/60 border border-charcoal-border">
-                  <Image
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal-card via-transparent to-transparent opacity-60" />
-                </div>
-                <DialogTitle className="font-display text-2xl sm:text-3xl font-bold text-cream-soft">
-                  {selectedProject.title}
-                </DialogTitle>
-                <DialogDescription className="text-sm text-[#baa89d] mt-1">
-                  {selectedProject.description}
+                  </div>
                 </DialogDescription>
               </DialogHeader>
-
-              <div className="space-y-4 my-2">
-                <div>
-                  <h4 className="text-sm font-bold text-cream mb-1.5 uppercase tracking-wider text-xs">
-                    Architecture &amp; Key Impact
-                  </h4>
-                  <p className="text-sm text-[#d4c5ba] leading-relaxed">
-                    {selectedProject.details}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-bold text-cream mb-2 uppercase tracking-wider text-xs">
-                    Technologies &amp; Tools Used
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 text-xs rounded-full bg-crimson/15 text-cream font-medium border border-crimson/30"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-charcoal-border">
-                {selectedProject.github && (
-                  <a
-                    href={selectedProject.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button variant="outline" size="sm" className="gap-2 border-charcoal-border text-cream hover:bg-white/5">
-                      <FaGithub className="h-4 w-4" />
-                      View Code
-                    </Button>
-                  </a>
-                )}
-                {selectedProject.live && (
-                  <a
-                    href={selectedProject.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="sm" className="gap-2 bg-crimson hover:bg-crimson-glow text-white shadow-md">
-                      <FaExternalLinkAlt className="h-3 w-3" />
-                      Live Demo
-                    </Button>
-                  </a>
-                )}
-              </div>
             </DialogContent>
-          )}
-        </Dialog>
-      </div>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </section>
-  );
+  )
 }

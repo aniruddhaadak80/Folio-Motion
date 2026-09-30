@@ -1,286 +1,358 @@
-"use client";
+"use client"
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronDown, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { ChevronRight, ChevronDown, X } from 'lucide-react'
+import { GlobalStyles } from '@mui/material';
+
+const scrollbarStyles = (
+  <GlobalStyles
+    styles={{
+      '*::-webkit-scrollbar': {
+        width: '8px',
+      },
+      '*::-webkit-scrollbar-track': {
+        background: 'transparent',
+      },
+      '*::-webkit-scrollbar-thumb': {
+        background: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: '20px',
+      },
+      '*::-webkit-scrollbar-thumb:hover': {
+        background: 'rgba(255, 255, 255, 0.7)',
+      },
+    }}
+  />
+);
 
 interface Skill {
-  name: string;
-  level: number;
-  icon: string;
-  description: string;
-  projects: string[];
+  name: string
+  level: number
+  icon: string
+  description: string
+  projects: string[]
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-export function SkillSection() {
-  const [showLevel, setShowLevel] = useState<boolean>(true);
-  const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
-  const [visibleSkills, setVisibleSkills] = useState<number>(6);
+export  function SkillSection() {
+  const [showLevel, setShowLevel] = useState<boolean>(false)
+  const [expandedSkill, setExpandedSkill] = useState<string | null>(null)
+  const [visibleSkills, setVisibleSkills] = useState<number>(3)
 
   const skills: Skill[] = [
-    {
-      name: "Python",
-      level: 95,
-      icon: "🐍",
-      description: "Primary language for ML pipelines, deep algorithms, data science, and high-performance API engineering.",
-      projects: ["LearnVaultX", "ExamSentinelX AI", "Apple Stock Price Analysis"],
+    { 
+      name: "React", 
+      level: 90, 
+      icon: "react-icon", 
+      description: "Building interactive UIs with React",
+      projects: ["E-commerce Platform", "Social Media Dashboard", "Portfolio Website"]
     },
-    {
-      name: "Machine Learning & AI",
-      level: 92,
-      icon: "🤖",
-      description: "Predictive regression modeling, Scikit-Learn classifiers, hyperparameter tuning, and automated scoring.",
-      projects: ["LearnVaultX", "ExamSentinelX AI", "Apple Stock Price Analysis"],
+    { 
+      name: "Node.js", 
+      level: 85, 
+      icon: "nodejs-icon", 
+      description: "Server-side JavaScript with Node.js",
+      projects: ["RESTful API", "Real-time Chat Application", "Task Management System"]
     },
-    {
-      name: "Autonomous AI Agents",
-      level: 90,
-      icon: "🧠",
-      description: "Agentic workflows, prompt engineering, Google AI Agents course graduate, and LLM API integrations.",
-      projects: ["XTRAGRAD AI Workflows", "LearnVaultX LLM Engine", "Autonomous Utilities"],
+    { 
+      name: "CSS", 
+      level: 80, 
+      icon: "css-icon", 
+      description: "Styling web applications with CSS",
+      projects: ["Responsive Landing Page", "CSS Animation Library", "Custom UI Component Kit"]
     },
-    {
-      name: "Computer Vision (OpenCV)",
-      level: 88,
-      icon: "👁️",
-      description: "Real-time video frame processing, face detection, gaze angle tracking, and automated invigilation.",
-      projects: ["ExamSentinelX AI", "Haar Cascade Detection", "Motion Analysis"],
+    { 
+      name: "JavaScript", 
+      level: 95, 
+      icon: "js-icon", 
+      description: "Core language for web development",
+      projects: ["Interactive Data Visualization", "Browser Extension", "JavaScript Game Engine"]
     },
-    {
-      name: "Data Science & Analytics",
-      level: 91,
-      icon: "📊",
-      description: "Exploratory Data Analysis (EDA), NumPy, Pandas, data cleaning, and statistical reporting.",
-      projects: ["Apple Stock Price Analysis", "Thiranex Internship", "IncodeVision EDA"],
+    { 
+      name: "TypeScript", 
+      level: 90, 
+      icon: "ts-icon", 
+      description: "Typed superset of JavaScript",
+      projects: ["Enterprise-level CRM", "TypeScript Library", "Angular Application"]
     },
-    {
-      name: "Next.js & React (basics)",
-      level: 78,
-      icon: "⚛️",
-      description: "Reactive component design, responsive UI layouts, Tailwind CSS styling, and SSR web fundamentals.",
-      projects: ["Folio Motion Portfolio", "Futuristic Tic Tac Toe"],
+    { 
+      name: "GraphQL", 
+      level: 75, 
+      icon: "graphql-icon", 
+      description: "Efficient API queries with GraphQL",
+      projects: ["GraphQL API Gateway", "Real-time Data Subscription", "GraphQL Client Integration"]
     },
-    {
-      name: "Flask & REST APIs",
-      level: 86,
-      icon: "⚡",
-      description: "Lightweight backend microservices, ML model inference endpoints, and responsive client-server synchronization.",
-      projects: ["LearnVaultX Backend", "Daily Task Tracker", "ExamSentinelX AI Service"],
+    { 
+      name: "Python", 
+      level: 70, 
+      icon: "python-icon", 
+      description: "Versatile programming language",
+      projects: ["Data Analysis Tool", "Machine Learning Model", "Web Scraping Script"]
     },
-    {
-      name: "Docker & Git",
-      level: 85,
-      icon: "🐳",
-      description: "Containerized application runtime, CI workflows, and collaborative Git version control.",
-      projects: ["LearnVaultX Deployment", "Open Source Repositories", "Production Environments"],
+    { 
+      name: "Docker", 
+      level: 65, 
+      icon: "docker-icon", 
+      description: "Containerization for applications",
+      projects: ["Microservices Architecture", "CI/CD Pipeline", "Development Environment Setup"]
     },
-  ];
+  ]
 
   const toggleSkillExpansion = (skillName: string) => {
-    setExpandedSkill(expandedSkill === skillName ? null : skillName);
-  };
+    setExpandedSkill(expandedSkill === skillName ? null : skillName)
+  }
 
   const showMoreSkills = () => {
-    setVisibleSkills((prevVisible) => Math.min(prevVisible + 3, skills.length));
+    setVisibleSkills(prevVisible => Math.min(prevVisible + 3, skills.length))
+  }
+
+  const getSkillEmoji = (skillName: string) => {
+    const emojiMap: { [key: string]: string } = {
+      "React": "⚛️",
+      "Node.js": "🟢",
+      "CSS": "🎨",
+      "JavaScript": "🟨",
+      "TypeScript": "🔷",
+      "GraphQL": "🔺",
+      "Python": "🐍",
+      "Docker": "🐳"
+    };
+    return emojiMap[skillName] || "🔧";
   };
 
   return (
-    <section
-      id="skills"
-      className="py-28 relative overflow-hidden bg-charcoal"
-    >
-      {/* Sleek Minimal Section Divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[1px] bg-gradient-to-r from-transparent via-crimson/35 to-transparent" />
-
-      {/* Ambient Lava Light */}
-      <div className="absolute top-1/3 left-0 w-[550px] h-[550px] bg-crimson/12 rounded-full filter blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 right-0 w-[500px] h-[500px] bg-cream-gold/8 rounded-full filter blur-[150px] pointer-events-none" />
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson/15 border border-crimson/30 text-cream text-xs font-semibold uppercase tracking-wider mb-3"
-          >
-            <span>Proficiencies</span>
-          </motion.div>
-
+    <>
+      {scrollbarStyles}
+    <section id="skills" className="py-24 bg-gradient-to-br from-background to-secondary overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4"
+      >
+        <div className="text-center mb-12">
           <motion.h2
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 text-gradient-crimson-cream"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-3xl md:text-5xl font-bold mb-6 text-primary"
           >
-            Technical Competencies
+            My Skills
           </motion.h2>
-
           <motion.p
             initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ delay: 0.1, duration: 0.55, ease: "easeOut" }}
-            className="text-base sm:text-lg text-[#d4c5ba] mb-6"
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-lg md:text-xl text-muted-foreground mb-8"
           >
-            Specialized toolset and engineering competencies with real-time proficiency indicators.
+            Here's a collection of my skills with their proficiency levels.
           </motion.p>
-
-          <Button
-            variant="outline"
-            onClick={() => setShowLevel(!showLevel)}
-            className="transition-all border-crimson/40 bg-charcoal-card/80 text-cream hover:bg-crimson/20 hover:border-crimson"
+          <Button 
+            onClick={() => setShowLevel(!showLevel)} 
+            className="mb-8 transition-colors duration-300 hover:bg-purple-600"
           >
-            {showLevel ? "Hide Proficiency Levels" : "Show Proficiency Levels"}
+            {showLevel ? "Hide Levels" : "Show Levels"}
           </Button>
         </div>
 
-        {/* Skills Cards Grid with Staggered Scroll Animations Re-triggered On Every Visit */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.1 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence>
-            {skills.slice(0, visibleSkills).map((skill) => (
+            {skills.slice(0, visibleSkills).map((skill, index) => (
               <motion.div
                 key={skill.name}
                 layout
-                variants={itemVariants}
-                whileHover={{
-                  y: -6,
-                  transition: { duration: 0.25 },
+                initial={{ scale: 0.8, opacity: 0, y: 50 }}
+                animate={{ 
+                  scale: 1, 
+                  opacity: 1, 
+                  y: 0,
+                  transition: { 
+                    delay: index * 0.1, 
+                    duration: 0.5,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 10
+                  }
                 }}
-                className="relative overflow-hidden rounded-2xl bg-charcoal-card/90 border border-charcoal-border hover:border-crimson/40 shadow-lg hover:shadow-[0_10px_30px_-10px_rgba(196,30,58,0.25)] transition-all min-h-[230px]"
+                exit={{ scale: 0.8, opacity: 0, transition: { duration: 0.3 } }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+                  transition: { duration: 0.3 }
+                }}
+                className="relative overflow-hidden rounded-lg shadow-xl transition-all duration-300"
+                style={{
+                  background: `linear-gradient(135deg, hsl(${(index * 50) % 360}, 70%, 50%), hsl(${
+                    ((index * 50 + 180) % 360)
+                  }, 70%, 50%))`,
+                }}
               >
-                {/* Subtle lava ambient gradient accent on the card header */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-crimson via-[#e65c00] to-cream-gold opacity-80" />
-
-                <AnimatePresence mode="wait">
+                <motion.div 
+                  className="absolute inset-0 bg-white/10"
+                  animate={{ 
+                    opacity: [0.5, 0.8, 0.5],
+                    scale: [1, 1.2, 1],
+                  }} 
+                  transition={{ 
+                    repeat: Infinity,
+                    duration: 3,
+                    ease: "easeInOut",
+                  }}
+                />
+                <AnimatePresence>
                   {expandedSkill === skill.name ? (
                     <motion.div
-                      key="expanded"
-                      initial={{ opacity: 0, y: -20 }}
+                      initial={{ opacity: 0, y: -50 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                      className="absolute inset-0 p-6 overflow-y-auto bg-charcoal-elevated/98 backdrop-blur-md z-20 flex flex-col justify-between"
+                      exit={{ opacity: 0, y: -50 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-white scrollbar-track-transparent max-h-full"
+                      style={{
+                        backgroundColor: `hsla(${(index * 50) % 360}, 70%, 50%, 0.95)`,
+                      }}
                     >
-                      <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-display text-cream-soft font-bold text-xl flex items-center gap-2">
-                            <span>{skill.icon}</span>
-                            <span>{skill.name}</span>
-                          </h4>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-cream/70 hover:text-cream hover:bg-white/10 h-8 w-8 p-0 rounded-full"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleSkillExpansion(skill.name);
-                            }}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-
-                        <p className="text-[#c7b7ac] text-xs sm:text-sm leading-relaxed mb-4">
-                          {skill.description}
-                        </p>
-
-                        <h5 className="text-cream-gold font-bold text-[11px] uppercase tracking-wider mb-2">
-                          Applied In Projects:
-                        </h5>
-                        <ul className="space-y-1.5 text-xs text-[#d4c5ba]">
-                          {skill.projects.map((project, pIdx) => (
-                            <li key={pIdx} className="flex items-center gap-2">
-                              <span className="text-crimson font-bold">•</span> {project}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
+                      <Button 
+                        size="sm"
+                        className="absolute top-2 right-2 bg-white/20 hover:bg-white/40 transition-colors duration-300 z-10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSkillExpansion(skill.name);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                      <h4 className="text-white font-semibold mb-2 text-2xl">
+                        {skill.name} {getSkillEmoji(skill.name)}
+                      </h4>
+                      <p className="text-white mb-4 text-lg" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
+                        {skill.description}
+                      </p>
                       {showLevel && (
-                        <div className="mt-4 pt-3 border-t border-charcoal-border flex items-center justify-between text-xs text-cream">
-                          <span className="font-semibold text-[#baa89d]">Proficiency Rating:</span>
-                          <span className="font-extrabold text-sm text-cream-gold">{skill.level}%</span>
-                        </div>
+                        <motion.div className="w-full bg-white/30 rounded-full h-4 mb-4 overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{
+                              backgroundColor: `hsl(${skill.level * 1.2}, 70%, 50%)`,
+                              width: `${skill.level}%`,
+                            }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${skill.level}%` }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                          />
+                        </motion.div>
                       )}
+                      {showLevel && (
+                        <motion.p
+                          className="text-white mb-4 font-semibold text-xl"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.5, duration: 0.5 }}
+                        >
+                          Proficiency: 
+                          <motion.span
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1, duration: 0.5 }}
+                          >
+                            {skill.level}%
+                          </motion.span>
+                          🚀
+                        </motion.p>
+                      )}
+                      <h5 className="text-white font-semibold mb-2 text-xl">Related Projects 📂:</h5>
+                      <ul className="list-none text-white">
+                        {skill.projects.map((project, index) => (
+                          <motion.li
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 * index }}
+                            className="mb-2 flex items-center"
+                          >
+                            <span className="mr-2">🔹</span> {project}
+                          </motion.li>
+                        ))}
+                      </ul>
                     </motion.div>
                   ) : (
-                    <motion.div
-                      key="collapsed"
-                      className="p-6 relative z-10 flex flex-col justify-between h-full"
+                    <motion.div 
+                      className="p-6 relative z-10"
+                      animate={{ y: [0, 5, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        ease: "easeInOut",
+                      }}
                     >
-                      <div>
-                        <div className="flex items-center justify-between mb-4">
-                          <span className="text-3xl filter drop-shadow-md select-none">{skill.icon}</span>
-                          {showLevel && (
-                            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-crimson/15 text-cream border border-crimson/30">
-                              {skill.level}%
-                            </span>
-                          )}
-                        </div>
-
-                        <h3 className="text-xl font-bold text-cream-soft mb-2 tracking-tight font-display">
-                          {skill.name}
-                        </h3>
-
-                        <p className="text-xs text-[#baa89d] line-clamp-2 leading-relaxed">
-                          {skill.description}
-                        </p>
-                      </div>
-
-                      <div className="mt-5">
-                        {showLevel && (
-                          <div className="w-full bg-black/50 rounded-full h-2 mb-4 overflow-hidden border border-charcoal-border">
-                            <motion.div
-                              className="bg-gradient-to-r from-crimson via-[#e65c00] to-cream-gold h-2 rounded-full"
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${skill.level}%` }}
-                              viewport={{ once: false }}
-                              transition={{ duration: 1, ease: "easeOut" }}
-                            />
-                          </div>
-                        )}
-
-                        <Button
-                          size="sm"
-                          className="w-full bg-charcoal-elevated hover:bg-crimson/20 text-cream font-medium text-xs border border-charcoal-border hover:border-crimson/40 transition-all"
-                          onClick={() => toggleSkillExpansion(skill.name)}
+                      <motion.div
+                        className="flex items-center justify-center mb-4"
+                        initial={{ opacity: 0, rotate: -180 }}
+                        animate={{ opacity: 1, rotate: 0 }}
+                        transition={{ delay: 0.5, duration: 0.5 }}
+                      >
+                        <img src={`/placeholder.svg?height=48&width=48`} alt={skill.name} className="w-12 h-12" />
+                      </motion.div>
+                      <motion.h3
+                        className="text-2xl font-semibold text-white mb-2"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.6, duration: 0.5 }}
+                      >
+                        {skill.name}
+                      </motion.h3>
+                      {showLevel && (
+                        <motion.div
+                          className="w-full bg-white/30 rounded-full h-2.5 mb-4 overflow-hidden"
+                          initial={{ width: 0 }}
+                          animate={{ width: "100%" }}
+                          transition={{ delay: 0.7, duration: 1 }}
                         >
-                          More Details
-                          <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
+                          <motion.div
+                            className="bg-primary h-2.5 rounded-full"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${skill.level}%` }}
+                            transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
+                          />
+                        </motion.div>
+                      )}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8, duration: 0.5 }}
+                        className="mt-4"
+                      >
+                        <Button 
+                          size="sm" 
+                          className="group relative overflow-hidden transition-colors duration-300"
+                          onClick={() => toggleSkillExpansion(skill.name)}
+                          style={{
+                            backgroundColor: `hsl(${(index * 50) % 360}, 70%, 50%)`,
+                          }}
+                        >
+                          <span className="relative z-10">
+                            {expandedSkill === skill.name ? "Less Details" : "More Details"}
+                          </span>
+                          <motion.span
+                            className="absolute inset-0"
+                            initial={{ x: "100%" }}
+                            whileHover={{ x: 0 }}
+                            transition={{ duration: 0.3 }}
+                            style={{
+                              backgroundColor: `hsl(${((index * 50 + 180) % 360)}, 70%, 50%)`,
+                            }}
+                          />
+                          {expandedSkill === skill.name ? (
+                            <X className="ml-2 h-4 w-4 transition-transform group-hover:rotate-90 relative z-10" />
+                          ) : (
+                            <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 relative z-10" />
+                          )}
                         </Button>
-                      </div>
+                      </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -288,26 +360,25 @@ export function SkillSection() {
             ))}
           </AnimatePresence>
         </motion.div>
-
         {visibleSkills < skills.length && (
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="mt-12 text-center"
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="mt-8 text-center"
           >
-            <Button
-              onClick={showMoreSkills}
-              size="lg"
-              className="gap-2 font-semibold bg-charcoal-card text-cream border border-crimson/40 hover:bg-crimson/20 hover:border-crimson shadow-md"
+            <Button 
+              onClick={showMoreSkills} 
+              size="lg" 
+              className="group transition-colors duration-300 hover:bg-green-600"
             >
-              Show More Skills
-              <ChevronDown className="h-4 w-4" />
+              Show More
+              <ChevronDown className="ml-2 h-5 w-5 transition-transform group-hover:translate-y-1" />
             </Button>
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </section>
-  );
+    </>
+  )
 }

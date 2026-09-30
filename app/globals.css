@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 15 54% 3%;
-    --foreground: 38 67% 96%;
-    --card: 15 45% 5%;
-    --card-foreground: 38 67% 96%;
-    --popover: 15 45% 5%;
-    --popover-foreground: 38 67% 96%;
-    --primary: 350 73% 48%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 15 45% 9%;
-    --secondary-foreground: 39 65% 88%;
-    --muted: 15 35% 8%;
-    --muted-foreground: 23 18% 68%;
-    --accent: 39 65% 85%;
-    --accent-foreground: 15 54% 3%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 15 45% 12%;
-    --input: 15 45% 12%;
-    --ring: 350 73% 48%;
-    --radius: 0.85rem;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 15 54% 3%;
-    --foreground: 38 67% 96%;
-    --card: 15 45% 5%;
-    --card-foreground: 38 67% 96%;
-    --popover: 15 45% 5%;
-    --popover-foreground: 38 67% 96%;
-    --primary: 350 73% 48%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 15 45% 9%;
-    --secondary-foreground: 39 65% 88%;
-    --muted: 15 35% 8%;
-    --muted-foreground: 23 18% 68%;
-    --accent: 39 65% 85%;
-    --accent-foreground: 15 54% 3%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 15 45% 12%;
-    --input: 15 45% 12%;
-    --ring: 350 73% 48%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
@@ -53,23 +53,14 @@
   * {
     @apply border-border;
   }
-  html {
-    scroll-behavior: smooth;
-  }
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-crimson/30 selection:text-cream-soft;
-    background-color: #0a0503;
-    color: #fbf6ee;
-  }
-  h1, h2, h3, .font-display {
-    font-family: var(--font-display), serif;
-    letter-spacing: -0.02em;
+    @apply bg-background text-foreground;
   }
 }
 
 .animate-gradient {
-  background-size: 300% 300%;
-  animation: gradient 12s ease infinite;
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
 }
 
 @keyframes gradient {
@@ -84,23 +75,8 @@
   }
 }
 
-/* Subtle cinematic glow utility */
-.glow-lava {
-  box-shadow: 0 0 45px -10px rgba(196, 30, 58, 0.35);
-}
-
-.glow-cream {
-  box-shadow: 0 0 35px -10px rgba(245, 230, 200, 0.2);
-}
-
-.text-gradient-crimson-cream {
-  background: linear-gradient(135deg, #f5e6c8 0%, #e65c00 45%, #c41e3a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-gradient-gold {
-  background: linear-gradient(135deg, #ffffff 0%, #f5e6c8 50%, #e8c582 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
