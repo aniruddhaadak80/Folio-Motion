@@ -59,6 +59,24 @@ export function resolveSchema(): string {
   return raw;
 }
 
+/**
+ * Normalise a driver result into `{ rows }`.
+ *
+ * This exists because the two supported drivers disagree, and getting it
+ * wrong fails silently: `@neondatabase/serverless` v1 returns a plain array of
+ * row objects, while the pg-compatible surface returns `{ rows }`. Reading
+ * `.rows` off a bare array yields `undefined`, which turns every SELECT into
+ * an empty result set — reads look like "no data" rather than like an error.
+ *
+ * Exported so the contract is pinned by a unit test rather than discovered in
+ * production.
+ */
+export function normalizeRows<T>(result: unknown): { rows: T[] } {
+  if (Array.isArray(result)) return { rows: result as T[] };
+  const rows = (result as { rows?: T[] } | null | undefined)?.rows;
+  return { rows: Array.isArray(rows) ? rows : [] };
+}
+
 export interface Repository {
   readonly kind: "neon-postgres" | "pglite-embedded";
   init(): Promise<void>;
@@ -349,8 +367,7 @@ async function getNeonRepository(): Promise<Repository> {
   const executor: SqlExecutor = {
     async query<T>(statement: string, params: unknown[] = []) {
       const result = (await sql.query(statement, params as never[])) as unknown;
-      const rows = (result as { rows?: T[] }).rows;
-      return { rows: Array.isArray(rows) ? rows : [] };
+      return normalizeRows<T>(result);
     },
   };
   neonRepo = makeRepository("neon-postgres", executor);

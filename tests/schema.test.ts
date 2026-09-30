@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { resolveDatabaseUrl, resolveSchema } from "@/lib/repository";
+import { normalizeRows, resolveDatabaseUrl, resolveSchema } from "@/lib/repository";
 
 const originalSchema = process.env.DATABASE_SCHEMA;
 const originalUrl = process.env.DATABASE_URL;
@@ -12,6 +12,37 @@ afterEach(() => {
   else process.env.DATABASE_URL = originalUrl;
   if (originalPostgres === undefined) delete process.env.POSTGRES_URL;
   else process.env.POSTGRES_URL = originalPostgres;
+});
+
+describe("normalizeRows", () => {
+  it("unwraps a bare array, which is what the Neon v1 driver returns", () => {
+    // This is the exact shape that caused a production incident: reading
+    // `.rows` off a bare array yields undefined and every SELECT looks empty.
+    expect(normalizeRows([{ ok: 1 }])).toEqual({ rows: [{ ok: 1 }] });
+  });
+
+  it("unwraps a { rows } object, which is what PGlite returns", () => {
+    expect(normalizeRows({ rows: [{ id: "a" }] })).toEqual({ rows: [{ id: "a" }] });
+  });
+
+  it("preserves an empty result from either shape", () => {
+    expect(normalizeRows([])).toEqual({ rows: [] });
+    expect(normalizeRows({ rows: [] })).toEqual({ rows: [] });
+  });
+
+  it("degrades to an empty result rather than throwing on a foreign shape", () => {
+    expect(normalizeRows(null)).toEqual({ rows: [] });
+    expect(normalizeRows(undefined)).toEqual({ rows: [] });
+    expect(normalizeRows({})).toEqual({ rows: [] });
+    expect(normalizeRows(42)).toEqual({ rows: [] });
+    expect(normalizeRows("nope")).toEqual({ rows: [] });
+  });
+
+  it("keeps row objects intact, including numeric values", () => {
+    const rows = normalizeRows<{ ok: number; total: number }>([{ ok: 1, total: 0 }]).rows;
+    expect(rows[0]?.ok).toBe(1);
+    expect(rows[0]?.total).toBe(0);
+  });
 });
 
 describe("resolveDatabaseUrl", () => {
