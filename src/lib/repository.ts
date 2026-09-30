@@ -21,8 +21,6 @@ import { randomUUID } from "node:crypto";
 
 export type SqlExecutor = {
   query<T = Record<string, unknown>>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
-  /** Run one or more statements that take no parameters (DDL). */
-  exec(sql: string): Promise<void>;
 };
 
 /**
@@ -78,45 +76,57 @@ export interface Repository {
 }
 
 /**
- * Schema DDL. `schema` is validated by `resolveSchema()` before it is
- * interpolated here, so it can only ever be a plain identifier.
+ * Schema DDL, one statement per entry.
+ *
+ * These are issued individually rather than as a single multi-statement
+ * script because both supported drivers use the PostgreSQL *extended* query
+ * protocol for `query()`, which rejects more than one statement per call.
+ * Keeping DDL as a list of statements is the only shape that works unchanged
+ * on Neon and on PGlite.
+ *
+ * `schema` is validated by `resolveSchema()` before it is interpolated here,
+ * so it can only ever be a plain identifier.
  */
-function schemaSql(schema: string): string {
-  return `
-CREATE SCHEMA IF NOT EXISTS ${schema};
-SET search_path TO ${schema};
-
-CREATE TABLE IF NOT EXISTS motion_specs (
-  id            TEXT PRIMARY KEY,
-  name          TEXT NOT NULL,
-  description   TEXT NOT NULL DEFAULT '',
-  target        TEXT NOT NULL,
-  kind          TEXT NOT NULL,
-  params        JSONB NOT NULL,
-  owner_id      TEXT NOT NULL,
-  idempotency_key TEXT,
-  deleted       BOOLEAN NOT NULL DEFAULT FALSE,
-  created_at    TEXT NOT NULL,
-  updated_at    TEXT NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_specs_owner ON motion_specs (owner_id, created_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_specs_idem ON motion_specs (owner_id, idempotency_key)
-  WHERE idempotency_key IS NOT NULL;
-
-CREATE TABLE IF NOT EXISTS audit_events (
-  seq         BIGSERIAL PRIMARY KEY,
-  id          TEXT NOT NULL UNIQUE,
-  spec_id     TEXT NOT NULL,
-  owner_id    TEXT NOT NULL,
-  action      TEXT NOT NULL,
-  payload     TEXT NOT NULL,
-  prev_seal   TEXT NOT NULL,
-  seal        TEXT NOT NULL,
-  created_at  TEXT NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_audit_spec ON audit_events (spec_id, seq ASC);
-CREATE INDEX IF NOT EXISTS idx_audit_seq ON audit_events (seq ASC);
-`;
+function schemaStatements(schema: string): string[] {
+  return [
+    `CREATE SCHEMA IF NOT EXISTS ${schema}`,
+    `CREATE TABLE IF NOT EXISTS ${schema}.motion_specs (
+      id              TEXT PRIMARY KEY,
+      name            TEXT NOT NULL,
+      description     TEXT NOT NULL DEFAULT '',
+      target          TEXT NOT NULL,
+      kind            TEXT NOT NULL,
+      params          JSONB NOT NULL,
+      owner_id        TEXT NOT NULL,
+      idempotency_key TEXT,
+      deleted         BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at      TEXT NOT NULL,
+      updated_at      TEXT NOT NULL
+    )`,
+    // NOTE: Postgres does not allow a schema-qualified *index name* — only the
+    // target table may be qualified. An index lives in its table's schema, so
+    // the name is always given bare.
+    `CREATE INDEX IF NOT EXISTS idx_specs_owner
+       ON ${schema}.motion_specs (owner_id, created_at DESC)`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS idx_specs_idem
+       ON ${schema}.motion_specs (owner_id, idempotency_key)
+       WHERE idempotency_key IS NOT NULL`,
+    `CREATE TABLE IF NOT EXISTS ${schema}.audit_events (
+      seq        BIGSERIAL PRIMARY KEY,
+      id         TEXT NOT NULL UNIQUE,
+      spec_id    TEXT NOT NULL,
+      owner_id   TEXT NOT NULL,
+      action     TEXT NOT NULL,
+      payload    TEXT NOT NULL,
+      prev_seal  TEXT NOT NULL,
+      seal       TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_audit_spec
+       ON ${schema}.audit_events (spec_id, seq ASC)`,
+    `CREATE INDEX IF NOT EXISTS idx_audit_seq
+       ON ${schema}.audit_events (seq ASC)`,
+  ];
 }
 
 function rowToSpec(row: Record<string, unknown>): MotionSpec {
@@ -145,9 +155,11 @@ function makeRepository(kind: Repository["kind"], db: SqlExecutor): Repository {
     kind,
 
     async init() {
-      // DDL is a multi-statement script, so it goes through exec() rather than
-      // the parameterised query path (which allows only one statement).
-      await db.exec(schemaSql(schema));
+      // One statement per call: the extended query protocol used by both
+      // drivers allows only a single statement per request.
+      for (const statement of schemaStatements(schema)) {
+        await exec(statement);
+      }
     },
 
     async createSpec(ownerId, input) {
@@ -340,10 +352,6 @@ async function getNeonRepository(): Promise<Repository> {
       const rows = (result as { rows?: T[] }).rows;
       return { rows: Array.isArray(rows) ? rows : [] };
     },
-    async exec(statement: string) {
-      // Neon's query() accepts a multi-statement script and no parameters.
-      await sql.query(statement, [] as never[]);
-    },
   };
   neonRepo = makeRepository("neon-postgres", executor);
   return neonRepo;
@@ -367,10 +375,6 @@ async function getPgliteRepository(): Promise<Repository> {
       async query<T>(statement: string, params: unknown[] = []) {
         const result = await client.query<T>(statement, params as never[]);
         return { rows: result.rows };
-      },
-      async exec(statement: string) {
-        // PGlite's exec() runs a multi-statement script.
-        await client.exec(statement);
       },
     };
     pgliteRepo = makeRepository("pglite-embedded", executor);

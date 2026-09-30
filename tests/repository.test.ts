@@ -23,9 +23,6 @@ beforeAll(async () => {
       const result = await (client as NonNullable<typeof client>).query<T>(statement, values as never[]);
       return { rows: result.rows };
     },
-    async exec(statement: string) {
-      await (client as NonNullable<typeof client>).exec(statement);
-    },
   };
   repo = makeRepository("pglite-embedded", executor);
   await repo.init();
