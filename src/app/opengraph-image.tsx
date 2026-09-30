@@ -81,37 +81,43 @@ export default function OpengraphImage() {
           </div>
         </div>
 
-        {/* The measured curve */}
+        {/* The measured curve. Note: Satori supports only <path> inside SVG,
+            never <text>, so the annotation is a positioned div. */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
-          <svg width="560" height="150" viewBox="0 0 560 150">
-            <line x1="0" y1="140" x2="560" y2="140" stroke={INK} strokeOpacity="0.25" strokeWidth="1.5" />
-            <path
-              d={springTrace(560, 150, 320, 30)}
-              fill="none"
-              stroke={SIGNAL}
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-            <path
-              d={springTrace(560, 150, 320, 30)}
-              fill="none"
-              stroke={INK}
-              strokeWidth="9"
-              strokeOpacity="0.1"
-              strokeLinecap="round"
-            />
-            <line
-              x1={settleX}
-              y1="0"
-              x2={settleX}
-              y2="150"
-              stroke={RUBY}
-              strokeWidth="2.5"
-            />
-            <text x={settleX + 10} y="20" fill={RUBY} fontSize="15" fontFamily="monospace">
+          <div style={{ position: "relative", display: "flex", width: 560, height: 150 }}>
+            <svg width="560" height="150" viewBox="0 0 560 150">
+              <line x1="0" y1="140" x2="560" y2="140" stroke={INK} strokeOpacity="0.25" strokeWidth="1.5" />
+              <path
+                d={springTrace(560, 150, 320, 30)}
+                fill="none"
+                stroke={INK}
+                strokeWidth="9"
+                strokeOpacity="0.1"
+                strokeLinecap="round"
+              />
+              <path
+                d={springTrace(560, 150, 320, 30)}
+                fill="none"
+                stroke={SIGNAL}
+                strokeWidth="5"
+                strokeLinecap="round"
+              />
+              <line x1={settleX} y1="0" x2={settleX} y2="150" stroke={RUBY} strokeWidth="2.5" />
+            </svg>
+            <div
+              style={{
+                position: "absolute",
+                left: settleX + 10,
+                top: 2,
+                display: "flex",
+                fontSize: 15,
+                color: RUBY,
+                fontFamily: "monospace",
+              }}
+            >
               settle 371ms
-            </text>
-          </svg>
+            </div>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
             {[
