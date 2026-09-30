@@ -54,6 +54,42 @@ async function json(path, init) {
 const unique = `verify-${Date.now().toString(36)}`;
 let specId = null;
 
+/**
+ * Extract every `href` value from an HTML document.
+ *
+ * Link assertions compare these against an exact expected URL rather than
+ * running `html.includes(url)`. A substring test is not an equality test: a
+ * page pointing at `https://github.com/you/repo-attacker` would satisfy
+ * `includes("https://github.com/you/repo")`, so the check would pass on a
+ * link to the wrong repository.
+ */
+function extractHrefs(html) {
+  return [...html.matchAll(/href="([^"]*)"/g)].map((match) => match[1]);
+}
+
+/** Normalise a URL so equivalent forms compare equal. */
+function normalizeUrl(value) {
+  try {
+    const url = new URL(value, base);
+    url.hash = "";
+    return `${url.origin}${url.pathname.replace(/\/+$/, "")}${url.search}`;
+  } catch {
+    return value;
+  }
+}
+
+/** True when the document links to exactly `expected` (and not a lookalike). */
+function linksTo(html, expected) {
+  const target = normalizeUrl(expected);
+  return extractHrefs(html).some((href) => normalizeUrl(href) === target);
+}
+
+/** How many links in the document point at exactly `expected`. */
+function countLinksTo(html, expected) {
+  const target = normalizeUrl(expected);
+  return extractHrefs(html).filter((href) => normalizeUrl(href) === target).length;
+}
+
 console.log(`\nVerifying ${base}\n${"─".repeat(64)}`);
 
 /* 1. Landing page */
@@ -61,11 +97,7 @@ console.log(`\nVerifying ${base}\n${"─".repeat(64)}`);
   const res = await call("/");
   const html = await res.text();
   record("landing returns 200", res.status === 200, `status ${res.status}`);
-  record(
-    "landing links the real repository",
-    html.includes(repository),
-    repository,
-  );
+  record("landing links the real repository", linksTo(html, repository), repository);
   record("landing renders the product name", html.includes("Folio"), "Folio");
 }
 
@@ -358,7 +390,20 @@ console.log(`\nVerifying ${base}\n${"─".repeat(64)}`);
 }
 
 /* 19. Every user-facing route responds */
-for (const route of ["/lab", "/specs", "/signals", "/agent", "/method", "/verify"]) {
+for (const route of [
+  "/",
+  "/about",
+  "/projects",
+  "/projects/folio-motion",
+  "/experience",
+  "/contact",
+  "/lab",
+  "/specs",
+  "/signals",
+  "/agent",
+  "/method",
+  "/verify",
+]) {
   const res = await call(route);
   record(`route ${route} returns 200`, res.status === 200, `status ${res.status}`);
 }
@@ -367,8 +412,8 @@ for (const route of ["/lab", "/specs", "/signals", "/agent", "/method", "/verify
 {
   const res = await call("/method");
   const html = await res.text();
-  const repoLinks = html.split(repository).length - 1;
-  record("repository link appears in shared chrome", repoLinks >= 1, `${repoLinks} occurrence(s)`);
+  const repoLinks = countLinksTo(html, repository);
+  record("repository link appears in shared chrome", repoLinks >= 1, `${repoLinks} link(s)`);
 }
 
 /* 21. mcp.json manifest points at a real endpoint */
