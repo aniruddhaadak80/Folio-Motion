@@ -37,10 +37,12 @@ yarn-error.log*
 *.sqlite3
 .pglite/
 
-# proof artifacts written by the live verifier
+# proof artifacts written by the live verifier and the browser suite
 /verify-live-report.json
 /playwright-report/
 /test-results/
+/e2e-*.json
+/e2e-*.log
 
 # local server + tool logs
 *.log
