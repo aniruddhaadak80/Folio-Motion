@@ -1,15 +1,16 @@
 import { ImageResponse } from "next/og";
+import { personal, seo } from "@/config/portfolio";
 
-export const alt = "Folio Motion — a motion-physics lab for the browser";
+export const alt = `${personal.name} — ${personal.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 /**
  * OpenGraph card.
  *
- * Rendered with the same palette and the same real spring curve the app
- * produces, so the share image is a picture of the product rather than a
- * decorative graphic.
+ * The content comes from src/config/portfolio.ts, so it stays correct when the
+ * template is forked. The curve is the real integrated spring, drawn with the
+ * same equation the lab uses.
  */
 
 const PAPER = "#f4f1e8";
@@ -68,16 +69,19 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ display: "flex", width: 14, height: 14, background: SIGNAL }} />
           <div style={{ fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: INK3 }}>
-            folio motion
+            {seo.repository.replace("https://github.com/", "")}
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 82, lineHeight: 1.02, letterSpacing: -2.5, maxWidth: 1000 }}>
-            Animation you can measure, not guess.
+          <div style={{ fontSize: 66, lineHeight: 1.04, letterSpacing: -2, maxWidth: 1020 }}>
+            {personal.name}
           </div>
-          <div style={{ fontSize: 27, color: INK3, marginTop: 22, maxWidth: 900 }}>
-            The spring equation, integrated. Real settle time, real overshoot, exportable CSS.
+          <div style={{ fontSize: 40, color: SIGNAL, marginTop: 8, letterSpacing: -1 }}>
+            {personal.role}
+          </div>
+          <div style={{ fontSize: 25, color: INK3, marginTop: 18, maxWidth: 900 }}>
+            {personal.tagline}
           </div>
         </div>
 
@@ -121,9 +125,9 @@ export default function OpengraphImage() {
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
             {[
-              ["integrated", "240Hz fixed step"],
-              ["scored", "5 explainable factors"],
-              ["audited", "SHA-384 chain"],
+              ["stack", "Next.js · TypeScript"],
+              ["tests", "76 unit · 17 browser"],
+              ["audit", "SHA-384 chain"],
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
                 <span style={{ fontSize: 20, textTransform: "uppercase", letterSpacing: 3, color: INK3 }}>

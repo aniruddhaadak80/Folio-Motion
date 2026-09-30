@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRepository, resolveDatabaseUrl, resolveSchema } from "@/lib/repository";
 import { ENGINE_VERSION } from "@/lib/engine";
-import { siteConfig } from "@/lib/site";
+import { seo } from "@/config/portfolio";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,7 +25,7 @@ export async function GET() {
           ok: false,
           detail: "No DATABASE_URL or POSTGRES_URL is configured in production.",
         },
-        repository: siteConfig.repository,
+        repository: seo.repository,
       },
       { status: 503 },
     );
@@ -45,7 +45,7 @@ export async function GET() {
           .then((r) => r.total)
           .catch(() => -1),
         latencyMs: Date.now() - startedAt,
-        repository: siteConfig.repository,
+        repository: seo.repository,
       },
       { status: health.ok ? 200 : 503 },
     );

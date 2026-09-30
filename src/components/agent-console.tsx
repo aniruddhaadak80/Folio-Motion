@@ -11,7 +11,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { siteConfig } from "@/lib/site";
+import { seo } from "@/config/portfolio";
 import { BENCH_SPRING } from "@/components/motion-primitives";
 
 interface ToolCall {
@@ -351,7 +351,7 @@ export function AgentConsole() {
               mcpServers: {
                 "folio-motion": {
                   type: "http",
-                  url: `${siteConfig.mcp}`,
+                  url: `${seo.siteUrl}/api/mcp`,
                 },
               },
             },

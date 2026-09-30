@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620" role="img" aria-label="Portrait placeholder">
+  <defs>
+    <linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#33264c"/>
+      <stop offset="100%" stop-color="#1e1730"/>
+    </linearGradient>
+    <linearGradient id="pf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d8ff6b"/>
+      <stop offset="100%" stop-color="#8fb324"/>
+    </linearGradient>
+    <radialGradient id="pglow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0%" stop-color="#c8f542" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#c8f542" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="prule" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M30 0H0V30" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="500" height="620" fill="url(#pbg)"/>
+  <rect width="500" height="620" fill="url(#prule)"/>
+  <ellipse cx="250" cy="260" rx="230" ry="220" fill="url(#pglow)"/>
+
+  <!-- torso -->
+  <path d="M250 372c100 0 181 60 197 142 6 32 8 65 8 106H45c0-41 2-74 8-106 16-82 97-142 197-142Z" fill="url(#pf)" opacity="0.92"/>
+  <!-- collar -->
+  <path d="M250 372c-14 34-44 56-74 66 26 22 48 32 74 32s48-10 74-32c-30-10-60-32-74-66Z" fill="#241b2f" opacity="0.35"/>
+  <!-- neck -->
+  <path d="M212 320h76v70c0 13-17 22-38 22s-38-9-38-22v-70Z" fill="#c8f542" opacity="0.88"/>
+
+  <!-- head -->
+  <ellipse cx="250" cy="248" rx="92" ry="108" fill="#c8f542"/>
+  <!-- ears -->
+  <ellipse cx="158" cy="252" rx="13" ry="18" fill="#b8e23a"/>
+  <ellipse cx="342" cy="252" rx="13" ry="18" fill="#b8e23a"/>
+  <!-- hair -->
+  <path d="M250 140c-58 0-96 38-96 94 0 13 3 25 6 35 4-31 18-51 38-63 5 18 23 28 52 28s47-10 52-28c20 12 34 32 38 63 3-10 6-22 6-35 0-56-38-94-96-94Z" fill="#241b2f" opacity="0.84"/>
+
+  <!-- glasses -->
+  <g fill="none" stroke="#241b2f" stroke-opacity="0.72" stroke-width="5">
+    <rect x="188" y="228" width="52" height="42" rx="10"/>
+    <rect x="260" y="228" width="52" height="42" rx="10"/>
+    <path d="M240 246h20"/>
+    <path d="M188 240l-24-6"/>
+    <path d="M312 240l24-6"/>
+  </g>
+  <!-- eyes -->
+  <circle cx="214" cy="249" r="5" fill="#241b2f" opacity="0.8"/>
+  <circle cx="286" cy="249" r="5" fill="#241b2f" opacity="0.8"/>
+  <!-- smile -->
+  <path d="M224 296c11 12 41 12 52 0" fill="none" stroke="#241b2f" stroke-opacity="0.75" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- sprocket rails -->
+  <g opacity="0.35">
+    <rect x="0" y="0" width="500" height="12" fill="#c8f542"/>
+    <rect x="0" y="608" width="500" height="12" fill="#c8f542"/>
+  </g>
+  <g opacity="0.35" fill="#241b2f">
+    <rect x="0" y="0" width="500" height="12" fill="#241b2f"/>
+    <rect x="0" y="608" width="500" height="12" fill="#241b2f"/>
+  </g>
+
+  <g>
+    <rect x="26" y="548" width="196" height="30" fill="#241b2f" opacity="0.9"/>
+    <text x="38" y="569" font-family="ui-monospace, monospace" font-size="14" fill="#c8f542" letter-spacing="1.6">REPLACE THIS FILE</text>
+  </g>
+</svg>

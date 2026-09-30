@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { siteConfig } from "@/lib/site";
+import { personal, seo } from "@/config/portfolio";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollProgress } from "@/components/motion-primitives";
+import { themeInitScript } from "@/components/theme-switcher";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -24,60 +25,60 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+/**
+ * Metadata is built from src/config/portfolio.ts, so editing that file is
+ * enough to make the SEO description yours.
+ */
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.live),
+  metadataBase: new URL(seo.siteUrl),
   title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s · ${siteConfig.name}`,
+    default: seo.title,
+    template: `%s · ${personal.name}`,
   },
-  description: siteConfig.description,
-  applicationName: siteConfig.name,
-  keywords: [
-    "motion design",
-    "animation physics",
-    "spring physics",
-    "cubic bezier",
-    "framer motion",
-    "design tokens",
-    "accessibility",
-    "easing",
-    "next.js",
-  ],
-  authors: [{ name: siteConfig.author, url: siteConfig.authorUrl }],
-  creator: siteConfig.author,
+  description: seo.description,
+  applicationName: `${personal.name} — Portfolio`,
+  keywords: [...seo.keywords],
+  authors: [{ name: seo.author }],
+  creator: seo.author,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    url: siteConfig.live,
-    siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description: siteConfig.description,
+    url: seo.siteUrl,
+    siteName: `${personal.name} — Portfolio`,
+    title: seo.title,
+    description: seo.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description: siteConfig.description,
+    title: seo.title,
+    description: seo.description,
+    creator: seo.twitter,
   },
-  icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-  },
+  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }] },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f1e8",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f4f1e8" },
+    { media: "(prefers-color-scheme: dark)", color: "#14111c" },
+  ],
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${inter.variable} ${jetbrains.variable}`}>
+    <html lang="en" data-theme="bench" className={`${bricolage.variable} ${inter.variable} ${jetbrains.variable}`}>
+      <head>
+        {/* Applies the saved palette before first paint, so there is no flash. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         <ScrollProgress />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-ink focus:bg-signal focus:px-3 focus:py-2 focus:font-mono focus:text-xs"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-[var(--color-ink)] focus:bg-[var(--color-signal)] focus:px-3 focus:py-2 focus:font-mono focus:text-xs"
         >
           Skip to content
         </a>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500" role="img" aria-label="Portrait placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a2040"/>
+      <stop offset="55%" stop-color="#3a2b52"/>
+      <stop offset="100%" stop-color="#241b2f"/>
+    </linearGradient>
+    <linearGradient id="figure" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8f542" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#7fa51f" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="halo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c8f542" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#c8f542" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="ruling" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M25 0H0V25" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="400" height="500" fill="url(#bg)"/>
+  <rect width="400" height="500" fill="url(#ruling)"/>
+
+  <!-- light bloom behind the head -->
+  <circle cx="200" cy="205" r="165" fill="url(#halo)"/>
+
+  <!-- shoulders / torso -->
+  <path d="M200 300c78 0 141 47 154 111 5 25 6 51 6 89H40c0-38 1-64 6-89 13-64 76-111 154-111Z" fill="url(#figure)" opacity="0.9"/>
+
+  <!-- neck -->
+  <path d="M170 258h60v56c0 10-13 18-30 18s-30-8-30-18v-56Z" fill="#c8f542" opacity="0.85"/>
+
+  <!-- head -->
+  <ellipse cx="200" cy="196" rx="74" ry="86" fill="#c8f542"/>
+  <!-- hair -->
+  <path d="M200 110c-46 0-76 30-76 74 0 10 2 19 5 27 3-24 14-40 30-49 4 14 18 22 41 22s37-8 41-22c16 9 27 25 30 49 3-8 5-17 5-27 0-44-30-74-76-74Z" fill="#241b2f" opacity="0.82"/>
+  <!-- glasses -->
+  <g fill="none" stroke="#241b2f" stroke-opacity="0.7" stroke-width="4">
+    <circle cx="176" cy="200" r="21"/>
+    <circle cx="224" cy="200" r="21"/>
+    <path d="M197 200h6"/>
+    <path d="M155 197l-18-5"/>
+    <path d="M245 197l18-5"/>
+  </g>
+  <!-- smile -->
+  <path d="M180 232c8 9 32 9 40 0" fill="none" stroke="#241b2f" stroke-opacity="0.72" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- film-strip rails top and bottom -->
+  <g opacity="0.4">
+    <rect x="0" y="0" width="400" height="10" fill="#c8f542" opacity="0.5"/>
+    <rect x="0" y="490" width="400" height="10" fill="#c8f542" opacity="0.5"/>
+  </g>
+
+  <!-- label -->
+  <g>
+    <rect x="20" y="452" width="164" height="26" fill="#241b2f" opacity="0.85"/>
+    <text x="30" y="470" font-family="ui-monospace, monospace" font-size="13" fill="#c8f542" letter-spacing="1.5">YOUR PHOTO HERE</text>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img" aria-label="Prompt Forge cover">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#332552"/>
+      <stop offset="100%" stop-color="#1c1630"/>
+    </linearGradient>
+    <pattern id="p" width="22" height="22" patternUnits="userSpaceOnUse">
+      <path d="M22 0H0V22" fill="none" stroke="#ffffff" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="300" fill="url(#g)"/>
+  <rect width="400" height="300" fill="url(#p)"/>
+  <rect x="0" y="0" width="400" height="6" fill="#a78bfa" opacity="0.8"/>
+  <rect x="0" y="294" width="400" height="6" fill="#a78bfa" opacity="0.8"/>
+  <path d="M62 74h84l-18 26 18 26H62" fill="none" stroke="#a78bfa" stroke-width="5" stroke-linejoin="round"/>
+           <path d="M238 74h-84l18 26-18 26h84" fill="none" stroke="#f4f1e8" stroke-width="5" stroke-linejoin="round" opacity="0.75"/>
+  <text x="24" y="40" font-family="ui-monospace, monospace" font-size="15" fill="#f4f1e8" opacity="0.92" letter-spacing="0.5">Prompt Forge</text>
+  <text x="24" y="272" font-family="ui-monospace, monospace" font-size="12" fill="#a78bfa" opacity="0.95" letter-spacing="2">PROMPTS</text>
+</svg>
