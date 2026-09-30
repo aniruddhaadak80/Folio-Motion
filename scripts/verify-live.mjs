@@ -12,7 +12,7 @@
 
 import process from "node:process";
 
-const DEFAULT_BASE = process.env.FOLIO_MOTION_LIVE_URL ?? "https://folio-motion-aniruddha-adaks-projects.vercel.app";
+const DEFAULT_BASE = process.env.FOLIO_MOTION_LIVE_URL ?? "https://folio-motion.vercel.app";
 
 const base = (process.argv[2] ?? DEFAULT_BASE).replace(/\/$/, "");
 const repository = "https://github.com/aniruddhaadak80/Folio-Motion";

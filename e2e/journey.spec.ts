@@ -39,16 +39,31 @@ test.afterEach(() => {
 test("landing renders and links to the repository", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("measure");
-  await expect(page.getByText("Animation you can").first()).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Hi, I'm");
+  await expect(page.getByRole("link", { name: /see my work/i }).first()).toBeVisible();
 
-  // The hero preview must be a real moving element, not a placeholder.
-  await expect(page.getByRole("link", { name: /Open the motion lab/i }).first()).toBeVisible();
+  // The hero must contain a real, loaded photo rather than a broken image.
+  const photo = page.locator("section").first().locator("img").first();
+  await expect(photo).toBeVisible();
+  const loaded = await photo.evaluate(
+    (el) => (el as HTMLImageElement).complete && (el as HTMLImageElement).naturalWidth > 0,
+  );
+  expect(loaded, "the hero photo should actually load").toBe(true);
 
-  const repoLink = page.getByRole("link", { name: /star on github/i }).first();
+  // The footer repository link is the one that must be present on every
+  // route and every viewport, so that is what gets asserted here.
+  const repoLink = page.getByRole("link", { name: /view the source of this portfolio template/i });
   await expect(repoLink).toHaveAttribute("href", "https://github.com/aniruddhaadak80/Folio-Motion");
   await expect(repoLink).toHaveAttribute("target", "_blank");
   await expect(repoLink).toHaveAttribute("rel", /noopener/);
+
+  // The hero's own social row must link to the author's profile. Scoped to the
+  // hero so the header's "Star this template" button is not matched instead.
+  const hero = page.locator("section").first();
+  await expect(hero.getByRole("link", { name: "GitHub" })).toHaveAttribute(
+    "href",
+    "https://github.com/aniruddhaadak80",
+  );
 });
 
 test("primary journey: author, save, inspect, export, delete", async ({ page }) => {
@@ -218,7 +233,7 @@ test("mobile navigation opens and navigates", async ({ page, isMobile }) => {
 
   const nav = page.locator("#mobile-nav");
   await expect(nav).toBeVisible();
-  await expect(nav.getByRole("link", { name: /view source on github/i })).toHaveAttribute(
+  await expect(nav.getByRole("link", { name: /star on github/i })).toHaveAttribute(
     "href",
     "https://github.com/aniruddhaadak80/Folio-Motion",
   );

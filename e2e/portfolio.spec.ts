@@ -106,15 +106,24 @@ test("projects page filters, and the filter lives in the URL", async ({ page }) 
   await postgres.click();
 
   await expect(page).toHaveURL(/tag=Postgres/);
-  await expect(cards.first()).toBeVisible();
-  const filtered = await cards.count();
-  expect(filtered).toBeGreaterThan(0);
+  await expect(postgres).toHaveAttribute("aria-pressed", "true");
+
+  // router.replace is a client transition, so poll rather than reading the
+  // DOM on the next tick.
+  await expect
+    .poll(async () => page.getByRole("article").count(), { timeout: 20_000 })
+    .toBeGreaterThan(0);
+
+  const filtered = await page.getByRole("article").count();
   expect(filtered).toBeLessThanOrEqual(total);
 
   // A filtered view is shareable: the URL restores the same result.
   await page.reload();
   await expect(page).toHaveURL(/tag=Postgres/);
   await expect(postgres).toHaveAttribute("aria-pressed", "true");
+  await expect
+    .poll(async () => page.getByRole("article").count(), { timeout: 20_000 })
+    .toBe(filtered);
 });
 
 test("a project case study is complete and has working links", async ({ page }) => {
