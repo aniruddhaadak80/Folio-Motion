@@ -39,7 +39,10 @@ FM_BASE_URL=http://localhost:3000 npm run test:e2e  # against your dev server
 ```
 
 Those tests fail on any uncaught console error, so a change that renders but
-throws will not pass.
+throws will not pass. Note that `npm start` runs in production mode, which
+deliberately refuses to boot without a database connection string — so to run
+the lab tests locally, either use `npm run dev` or point `FM_BASE_URL` at a
+deployment that has one.
 
 ## Where things live
 

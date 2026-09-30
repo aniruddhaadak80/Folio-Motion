@@ -37,7 +37,7 @@ Folio Motion is built the other way round:
 | **A real backend** | Postgres in production, an embedded database locally. Full CRUD through the UI, not a form that fakes success. |
 | **An AI agent API** | Eight MCP tools over JSON-RPC 2.0, so an AI assistant can read and write your content. |
 | **A motion engine that measures** | The spring equation integrated at a fixed 240Hz step. Real settle time, real overshoot, exported as CSS. |
-| **Tests, not vibes** | 76 unit tests and 17 browser tests that fail on any console error. |
+| **Tests, not vibes** | 76 unit tests and 42 browser tests (desktop + mobile) that fail on any console error. |
 | **0 known vulnerabilities** | Was 89 Dependabot alerts before the 2.0 rewrite. |
 | **Three colour themes** | Swap palettes with one click. Add your own with a few lines of CSS. |
 
@@ -418,7 +418,7 @@ src/
 
 public/images/              ← your photo and project covers
 tests/                      ← 76 unit tests
-e2e/                        ← 17 browser tests
+e2e/                        ← 42 browser tests (desktop + mobile)
 ```
 
 ### Where to change what
@@ -446,7 +446,7 @@ e2e/                        ← 17 browser tests
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
 | `npm test` | 76 unit tests |
-| `npm run test:e2e` | 17 browser tests (desktop + mobile) |
+| `npm run test:e2e` | 42 browser tests (21 each, desktop + mobile) |
 | `npm run check` | Typecheck, lint, test, build — in order |
 
 Deploying to Vercel needs nothing. Other platforms work too; it's a standard
