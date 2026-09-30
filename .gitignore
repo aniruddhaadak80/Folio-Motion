@@ -50,6 +50,10 @@ yarn-error.log*
 # tool-installed agent skills (not project code)
 /.agents/
 
-
 .vercel
+
+# Vercel appends this when you run `vercel link`. It must not swallow the
+# documented example, or a fork never receives it.
 .env*
+!.env.example
+

@@ -1,13 +1,13 @@
 /**
  * Live end-to-end verification.
  *
- * Proves the deployed app really works by making real HTTP requests against
- * it. Run with:
+ * Proves a deployment really works by making real HTTP requests against it.
+ * Run with:
  *     node scripts/verify-live.mjs [baseUrl]
  *
- * The base URL defaults to the value in src/lib/site.ts. No secrets are
- * embedded here; the only credential is the anonymous session cookie, which
- * this script manages itself.
+ * The default base URL below must match `seo.siteUrl` in
+ * src/config/portfolio.ts. No secrets are embedded here; the only credential
+ * is the anonymous session cookie, which this script manages itself.
  */
 
 import process from "node:process";
