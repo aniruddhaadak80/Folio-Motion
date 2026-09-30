@@ -8,6 +8,12 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    // PGlite boots a full Postgres build in WebAssembly, which takes well over
+    // the 10s default on Windows.
+    hookTimeout: 120_000,
+    testTimeout: 60_000,
+    teardownTimeout: 60_000,
+    pool: "forks",
   },
   resolve: {
     alias: {

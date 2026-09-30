@@ -1,0 +1,351 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Folio Motion — visual identity
+   Metaphor: an optical motion bench. Bone paper, aubergine ink, a chartreuse
+   signal that only ever marks live/measured state. A film-strip timeline runs
+   along the top of every page like a timecode gutter.
+   ========================================================================== */
+
+@theme {
+  --color-paper: #f4f1e8;
+  --color-paper-2: #eae5d6;
+  --color-paper-3: #ded8c6;
+  --color-ink: #241b2f;
+  --color-ink-2: #3b2f4d;
+  --color-ink-3: #6b5c7e;
+  --color-signal: #c8f542;
+  --color-signal-2: #a8d92c;
+  --color-ruby: #d94f2b;
+  --color-cobalt: #2d6e8e;
+  --color-violet: #7a5cc4;
+
+  --font-display: var(--font-bricolage), "Georgia", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-bench: 2px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    border-color: color-mix(in oklab, var(--color-ink) 14%, transparent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Bench grid: a faint engineering-paper ruling that reads as a work surface. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px);
+    background-size: 88px 88px;
+    mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 20%, transparent 78%);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cobalt);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* A timecode gutter style for data readouts. */
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+}
+
+@layer components {
+  /* Film-strip rail: the recurring timeline element. */
+  .filmstrip {
+    background-image: repeating-linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-ink) 12%, transparent) 0 2px,
+      transparent 2px 14px
+    );
+  }
+
+  .panel {
+    background: color-mix(in oklab, var(--color-paper) 92%, var(--color-ink));
+    border: 1px solid color-mix(in oklab, var(--color-ink) 16%, transparent);
+    border-radius: var(--radius-bench);
+  }
+
+  .panel-raised {
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-paper) 90%, #fff) inset,
+      0 12px 28px -18px color-mix(in oklab, var(--color-ink) 55%, transparent);
+  }
+
+  /* Sprocket holes along the top and bottom of a strip. */
+  .sprockets {
+    position: relative;
+  }
+  .sprockets::before,
+  .sprockets::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background-image: repeating-linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-ink) 22%, transparent) 0 6px,
+      transparent 6px 16px
+    );
+    opacity: 0.5;
+  }
+  .sprockets::before { top: 0; }
+  .sprockets::after { bottom: 0; }
+
+  .btn-bench {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-bench);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    cursor: pointer;
+    overflow: hidden;
+    transition: color 160ms var(--ease-out-expo), border-color 160ms var(--ease-out-expo);
+  }
+  /* Wipe fill: the button fills from the left on hover. */
+  .btn-bench::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--color-signal);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 320ms var(--ease-out-expo);
+  }
+  .btn-bench:hover::before,
+  .btn-bench:focus-visible::before {
+    transform: scaleX(1);
+  }
+  .btn-bench:hover,
+  .btn-bench:focus-visible {
+    color: var(--color-ink);
+  }
+  .btn-bench > * {
+    position: relative;
+    z-index: 1;
+  }
+  .btn-bench:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .btn-bench:disabled::before {
+    transform: scaleX(0);
+  }
+
+  .btn-ghost {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 28%, transparent);
+    border-radius: var(--radius-bench);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: border-color 160ms var(--ease-out-expo), background-color 160ms var(--ease-out-expo);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-ink);
+    background: color-mix(in oklab, var(--color-ink) 5%, transparent);
+  }
+
+  .field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    background: color-mix(in oklab, var(--color-paper) 70%, #fff);
+    border: 1px solid color-mix(in oklab, var(--color-ink) 20%, transparent);
+    border-radius: var(--radius-bench);
+    color: var(--color-ink);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-cobalt);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-cobalt) 18%, transparent);
+  }
+
+  /* Range inputs styled as bench dials. */
+  .dial {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 26px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+  .dial::-webkit-slider-runnable-track {
+    height: 3px;
+    background: color-mix(in oklab, var(--color-ink) 22%, transparent);
+  }
+  .dial::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: var(--color-ink);
+    border: 2px solid var(--color-paper);
+    box-shadow: 0 0 0 1px var(--color-ink);
+  }
+  .dial::-moz-range-track {
+    height: 3px;
+    background: color-mix(in oklab, var(--color-ink) 22%, transparent);
+  }
+  .dial::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--color-ink);
+    border: 2px solid var(--color-paper);
+  }
+  .dial:focus-visible::-webkit-slider-thumb {
+    background: var(--color-signal-2);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.1875rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 22%, transparent);
+    border-radius: 999px;
+    color: var(--color-ink-2);
+  }
+  .chip-live {
+    border-color: var(--color-signal-2);
+    background: color-mix(in oklab, var(--color-signal) 26%, transparent);
+    color: var(--color-ink);
+  }
+  .chip-warn {
+    border-color: color-mix(in oklab, var(--color-ruby) 55%, transparent);
+    color: var(--color-ruby);
+  }
+
+  .prose-bench p {
+    color: var(--color-ink-2);
+    line-height: 1.7;
+  }
+  .prose-bench code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: color-mix(in oklab, var(--color-ink) 8%, transparent);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Chartreuse is reserved for measured/live state. Never decorative. */
+  .ink-signal { color: var(--color-signal-2); }
+
+  .scan-line {
+    background: repeating-linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-ink) 8%, transparent) 0 1px,
+      transparent 1px 4px
+    );
+  }
+}
+
+@keyframes fm-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes fm-pulse-ring {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  70% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes fm-dash {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Honour the OS setting: the signature interaction must survive without
+   animation, so every animated affordance has a static equivalent. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .btn-bench::before {
+    transform: scaleX(0) !important;
+  }
+}

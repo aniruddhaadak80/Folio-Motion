@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-06-18/server.schema.json",
+  "name": "io.github.aniruddhaadak80/folio-motion",
+  "description": "Motion-physics lab for the browser: score spring and cubic-bezier animation specs with a deterministic numerical engine, persist them, export production code, and verify a SHA-384 audit chain.",
+  "version": "2.0.0",
+  "repository": {
+    "url": "https://github.com/aniruddhaadak80/Folio-Motion",
+    "source": "github"
+  },
+  "websiteUrl": "https://folio-motion-aniruddha-adaks-projects.vercel.app",
+  "packages": [
+    {
+      "registryType": "canonical",
+      "registryBaseUrl": "https://folio-motion-aniruddha-adaks-projects.vercel.app",
+      "identifier": "folio-motion",
+      "version": "2.0.0",
+      "transport": {
+        "type": "streamable-http",
+        "url": "https://folio-motion-aniruddha-adaks-projects.vercel.app/api/mcp"
+      }
+    }
+  ]
+}

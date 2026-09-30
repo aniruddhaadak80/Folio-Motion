@@ -41,3 +41,15 @@ yarn-error.log*
 /verify-live-report.json
 /playwright-report/
 /test-results/
+
+# local server + tool logs
+*.log
+/.vercel-prod*.env
+/skills-lock.json
+
+# tool-installed agent skills (not project code)
+/.agents/
+
+
+.vercel
+.env*
