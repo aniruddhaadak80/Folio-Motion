@@ -19,7 +19,7 @@ describe('GdprBanner', () => {
     render(<GdprBanner />);
     const acceptBtn = screen.getByRole('button', { name: /accept/i });
     await userEvent.click(acceptBtn);
-    expect(screen.queryByText(/we use cookies/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/we use cookies/i)).toBeNull();
     expect(localStorage.getItem('gdprConsent')).toBe('true');
   });
 
@@ -27,7 +27,7 @@ describe('GdprBanner', () => {
     render(<GdprBanner />);
     const declineBtn = screen.getByRole('button', { name: /decline/i });
     await userEvent.click(declineBtn);
-    expect(screen.queryByText(/we use cookies/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/we use cookies/i)).toBeNull();
     expect(localStorage.getItem('gdprConsent')).toBe('false');
   });
 
@@ -36,6 +36,6 @@ describe('GdprBanner', () => {
       window.localStorage.setItem('gdprConsent', 'true');
     }
     render(<GdprBanner />);
-    expect(screen.queryByText(/we use cookies/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/we use cookies/i)).toBeNull();
   });
 });
