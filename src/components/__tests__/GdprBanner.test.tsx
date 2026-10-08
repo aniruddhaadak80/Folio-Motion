@@ -12,7 +12,7 @@ describe('GdprBanner', () => {
 
   it('shows banner when no consent given', () => {
     render(<GdprBanner />);
-    expect(screen.getByText(/we use cookies/i)).toBeInTheDocument();
+    expect(screen.getByText(/we use cookies/i)).toBeInstanceOf(HTMLElement);
   });
 
   it('hides banner after accepting', async () => {
