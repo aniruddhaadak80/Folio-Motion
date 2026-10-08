@@ -21,8 +21,7 @@
     "incremental": true,
     "types": [
       "node",
-      "vitest/globals",
-      "jest-dom"
+      "vitest/globals"
     ],
     "plugins": [
       {
