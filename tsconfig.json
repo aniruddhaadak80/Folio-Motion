@@ -33,6 +33,10 @@
         "./src/*"
       ]
     }
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@testing-library/jest-dom/types"
+    ],
   },
   "include": [
     "next-env.d.ts",
