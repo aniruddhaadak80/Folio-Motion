@@ -3,7 +3,6 @@ import styles from './GdprBanner.module.css';
 
 export const GdprBanner = () => {
   const [showBanner, setShowBanner] = useState(() => {
-    // Check if consent is already given
     return typeof window !== 'undefined' && !localStorage.getItem('gdprConsent');
   });
 
@@ -20,12 +19,7 @@ export const GdprBanner = () => {
     window.dispatchEvent(new Event('gdprDecline'));
   };
 
-  useEffect(() => {
-    // If consent already given, ensure banner is hidden
-    if (typeof window !== 'undefined' && localStorage.getItem('gdprConsent')) {
-      setShowBanner(false);
-    }
-  }, []);
+  // No need for effect; initial state already set.
 
   if (!showBanner) {
     return null;
@@ -36,7 +30,7 @@ export const GdprBanner = () => {
       <div className={styles.content}>
         <p className={styles.message}>
           We use cookies to ensure you get the best experience on our website. By
-          clicking "Accept", you consent to the use of ALL cookies.
+          clicking &quot;Accept&quot;, you consent to the use of ALL cookies.
         </p>
         <div className={styles.actions}>
           <button className={styles.button} onClick={decline}>
