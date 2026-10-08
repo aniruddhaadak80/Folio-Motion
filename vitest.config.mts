@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: "node",
+    environment: "jsdom",
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
     // PGlite boots a full Postgres build in WebAssembly, which takes well over
     // the 10s default on Windows.
