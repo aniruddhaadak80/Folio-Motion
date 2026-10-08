@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from './GdprBanner.module.css';
 
 export const GdprBanner = () => {
