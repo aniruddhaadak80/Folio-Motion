@@ -12,11 +12,15 @@
 import { createHash } from "node:crypto";
 import type { AuditEvent } from "./types";
 
-export const GENESIS_SEAL = "0".repeat(96); // 384 bits of hex
+/** Initial 384-bit hexadecimal seal used as the parent of every chain. */
+export const GENESIS_SEAL = "0".repeat(96);
 
 /**
  * Deterministic JSON serialization: object keys sorted, no incidental
  * whitespace, arrays preserved in order.
+ *
+ * @param value Value to serialize.
+ * @returns A stable JSON representation suitable for hashing.
  */
 export function canonicalJson(value: unknown): string {
   if (value === null) return "null";
@@ -42,16 +46,34 @@ export function canonicalJson(value: unknown): string {
   return `{${parts.join(",")}}`;
 }
 
+/**
+ * Hash a UTF-8 string with SHA-384 and return the lowercase hexadecimal digest.
+ *
+ * @param input String to hash.
+ * @returns The 96-character SHA-384 digest.
+ */
 export function sha384Hex(input: string): string {
   return createHash("sha384").update(input, "utf8").digest("hex");
 }
 
-/** Compute the seal for one event given the previous seal. */
+/**
+ * Compute the seal for one event given the previous seal.
+ *
+ * @param prevSeal Seal of the preceding event, or {@link GENESIS_SEAL}.
+ * @param event Event data without its derived seal.
+ * @returns The SHA-384 seal for the event.
+ */
 export function computeSeal(prevSeal: string, event: Omit<AuditEvent, "seal">): string {
   return sha384Hex(prevSeal + canonicalJson(event));
 }
 
-/** Build a fully sealed event, chaining from the given previous seal. */
+/**
+ * Build a fully sealed event, chaining from the given previous seal.
+ *
+ * @param prevSeal Seal of the preceding event, or {@link GENESIS_SEAL}.
+ * @param event Event data without its derived seal.
+ * @returns A copy of the event with its computed seal attached.
+ */
 export function sealEvent(
   prevSeal: string,
   event: Omit<AuditEvent, "seal">,
@@ -59,6 +81,7 @@ export function sealEvent(
   return { ...event, seal: computeSeal(prevSeal, event) };
 }
 
+/** Result of verifying one ordered audit-event chain. */
 export interface ReplayResult {
   ok: boolean;
   checked: number;
@@ -68,6 +91,7 @@ export interface ReplayResult {
   reason: string | null;
 }
 
+/** Result of verifying all per-spec chains in a mixed event list. */
 export interface GroupedReplayResult {
   ok: boolean;
   chains: number;
@@ -80,6 +104,9 @@ export interface GroupedReplayResult {
  * Verify every per-entity chain in a mixed event list. Events are grouped by
  * `specId` and each group is replayed from genesis independently, which is what
  * per-entity chaining means.
+ *
+ * @param events Audit events from one or more specifications.
+ * @returns Aggregate verification results and the first broken link per chain.
  */
 export function replayAllChains(events: AuditEvent[]): GroupedReplayResult {
   const groups = new Map<string, AuditEvent[]>();
@@ -118,6 +145,9 @@ export function replayAllChains(events: AuditEvent[]): GroupedReplayResult {
 /**
  * Walk a chain in order and recompute every seal. Reports the first link that
  * does not match, which is exactly the event an operator needs to look at.
+ *
+ * @param events Ordered events belonging to one specification.
+ * @returns Verification status, failure details, and the last valid seal.
  */
 export function replayChain(events: AuditEvent[]): ReplayResult {
   if (events.length === 0) {
