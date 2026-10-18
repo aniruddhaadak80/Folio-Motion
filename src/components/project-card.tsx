@@ -8,9 +8,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ExternalLink, Github, Star } from "lucide-react";
+import { ArrowRight, ExternalLink, Star } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Project } from "@/config/portfolio";
+import { GitHubMark } from "@/components/github-mark";
 
 const STATUS_TONE: Record<string, string> = {
   live: "chip-live",
@@ -115,7 +116,7 @@ export function ProjectCard({
               className="btn-ghost btn-sm"
               aria-label={`View the ${project.title} source on GitHub (opens in a new tab)`}
             >
-              <Github size={12} />
+              <GitHubMark size={12} />
               Code
             </a>
           )}
