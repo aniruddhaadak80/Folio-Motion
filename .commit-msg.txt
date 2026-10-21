@@ -1,0 +1,21 @@
+test(vitest): fix the script suites the new include patterns exposed
+
+Turning on the suites under scripts/__tests__ broke three of them, which is
+what an unrun test does: they had never executed, so nobody knew they were
+wrong.
+
+Each one located its script with a string replace on import.meta.url:
+
+  path.replace('__tests__/security-audit.test.mjs', '../security-audit.mjs')
+
+On Linux that replaced the file name and produced scripts/../security-audit.mjs,
+which is the repository root, so the file was not there. On Windows the path
+separator is a backslash, the replace never matched, and the test checked
+that its own file existed - so it passed, for the wrong reason.
+
+They now resolve the path from the project root, which is right on every
+platform and in the jsdom environment, where import.meta.url is an http URL
+and cannot be turned into a path at all.
+
+Also ignores coverage/ in eslint, so a local coverage run does not leave the
+lint step with a warning about a generated file.
