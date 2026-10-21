@@ -30,6 +30,10 @@ function barTone(value: number): string {
 
 function FactorRow({ factor, expanded, onToggle }: { factor: ScoreFactor; expanded: boolean; onToggle: () => void }) {
   const reduced = useReducedMotion();
+  // The visible label names the bar, and the button points at the evidence
+  // it reveals, so the relationship is announced and not just implied.
+  const labelId = `factor-${factor.id}-label`;
+  const evidenceId = `factor-${factor.id}-evidence`;
 
   return (
     <li>
@@ -37,10 +41,13 @@ function FactorRow({ factor, expanded, onToggle }: { factor: ScoreFactor; expand
         type="button"
         onClick={onToggle}
         aria-expanded={expanded}
+        aria-controls={evidenceId}
         className="w-full px-3 py-2.5 text-left transition-colors hover:bg-ink/[0.04]"
       >
         <div className="flex items-baseline justify-between gap-3">
-          <span className="font-mono text-[11px] uppercase tracking-widest text-ink-2">{factor.label}</span>
+          <span id={labelId} className="font-mono text-[11px] uppercase tracking-widest text-ink-2">
+            {factor.label}
+          </span>
           <span className="mono text-[11px] text-ink-3">
             {factor.value}
             <span className="text-ink-3/60">/100</span>
@@ -48,7 +55,14 @@ function FactorRow({ factor, expanded, onToggle }: { factor: ScoreFactor; expand
           </span>
         </div>
 
-        <div className="mt-1.5 h-1 w-full bg-ink/10">
+        <div
+          className="mt-1.5 h-1 w-full bg-ink/10"
+          role="progressbar"
+          aria-labelledby={labelId}
+          aria-valuenow={factor.value}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <motion.div
             className={`h-full ${barTone(factor.value)}`}
             initial={reduced ? false : { width: 0 }}
@@ -60,6 +74,7 @@ function FactorRow({ factor, expanded, onToggle }: { factor: ScoreFactor; expand
 
       {expanded && (
         <motion.p
+          id={evidenceId}
           initial={reduced ? false : { opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           className="overflow-hidden px-3 pb-2.5 text-xs leading-relaxed text-ink-2"
