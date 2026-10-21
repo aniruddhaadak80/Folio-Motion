@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { pageMetadata } from "@/lib/seo";
 import { SpecsLibrary } from "@/components/specs-library";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Saved specs",
   description: "Every motion spec you have saved in this session, with live scores and comparison.",
-  alternates: { canonical: "/specs" },
-};
+  path: "/specs",
+});
 
 export default function SpecsPage() {
   return (
