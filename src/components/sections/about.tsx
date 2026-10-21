@@ -62,7 +62,7 @@ export function About() {
               <div className="relative aspect-[5/6] overflow-hidden border border-[var(--color-line)]">
                 <Image
                   src={personal.portrait}
-                  alt={`${personal.name} — portrait`}
+                  alt={personal.portraitAlt}
                   fill
                   sizes="(max-width: 1024px) 90vw, 420px"
                   className="object-cover"

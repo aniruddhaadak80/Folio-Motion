@@ -113,7 +113,9 @@ export function Hero() {
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
                         className="flex h-9 w-9 items-center justify-center border border-[var(--color-line)] text-[var(--color-ink-2)] transition-all hover:-translate-y-0.5 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
-                        aria-label={social.label}
+                        // The icon on its own only says which platform this
+                        // is. The description says whose account it is.
+                        aria-label={social.description ?? social.label}
                       >
                         {social.label === "GitHub" ? (
                           <GitHubMark size={15} />
@@ -147,7 +149,7 @@ export function Hero() {
               <div className="relative aspect-[4/5] overflow-hidden border border-[var(--color-line)] bg-[var(--color-paper-2)]">
                 <Image
                   src={personal.avatar}
-                  alt={`${personal.name}, ${personal.role}`}
+                  alt={personal.avatarAlt}
                   fill
                   priority
                   sizes="(max-width: 1024px) 90vw, 380px"
@@ -180,11 +182,13 @@ export function Hero() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ ...(reduced ? {} : { duration: 0.5, delay: i * 0.06 }), ease: [0.16, 1, 0.3, 1] }}
               className="bg-[var(--color-paper)] px-4 py-5"
-              title={stat.hint}
             >
               <dt className="label">{stat.label}</dt>
               <dd className="mono mt-1.5 text-3xl leading-none sm:text-4xl">
                 <CountUp to={stat.value} suffix={stat.suffix} />
+                {/* The hint used to be a tooltip, which only a mouse user
+                    ever saw. It is read out after the number instead. */}
+                <span className="sr-only">. {stat.hint}</span>
               </dd>
             </motion.div>
           ))}
