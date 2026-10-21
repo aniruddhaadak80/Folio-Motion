@@ -28,6 +28,11 @@ const jetbrains = JetBrains_Mono({
 /**
  * Metadata is built from src/config/portfolio.ts, so editing that file is
  * enough to make the SEO description yours.
+ *
+ * The OpenGraph and Twitter blocks here are the site-wide fallback. Every
+ * page overrides them with `pageMetadata()` from `src/lib/seo.ts`, which
+ * keeps the title, description, canonical URL and card in one place instead
+ * of letting each page hand-roll its own.
  */
 export const metadata: Metadata = {
   metadataBase: new URL(seo.siteUrl),

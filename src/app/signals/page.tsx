@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { getFeed } from "@/lib/feed";
 import { FEED_REVALIDATE } from "@/lib/feed";
+import { pageMetadata } from "@/lib/seo";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Library signals",
   description:
     "Live release state for the animation libraries Folio Motion advises on, read from the public npm registry.",
-  alternates: { canonical: "/signals" },
-};
+  path: "/signals",
+});
 
 export const revalidate = 900;
 

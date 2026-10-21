@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ENGINE_VERSION, FACTOR_WEIGHTS, TOTAL_WEIGHT } from "@/lib/engine";
 import { GENESIS_SEAL } from "@/lib/integrity";
+import { pageMetadata } from "@/lib/seo";
 import { Reveal, StaggerGroup, StaggerItem, TiltCard } from "@/components/motion-primitives";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Method",
   description:
     "Exactly how Folio Motion integrates springs, solves cubic beziers, and scores the result. No hidden heuristics.",
-  alternates: { canonical: "/method" },
-};
+  path: "/method",
+});
 
 const FACTOR_NOTES: Array<{ id: keyof typeof FACTOR_WEIGHTS; label: string; how: string }> = [
   {
