@@ -86,6 +86,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Cache Playwright browsers
+        # The browsers are ~150 MB of download that is identical on every run.
+        # The key follows the lockfile, so bumping @playwright/test fetches the
+        # new browser instead of reusing the old one.
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
