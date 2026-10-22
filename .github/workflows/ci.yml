@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Manual trigger so CI can be run against a non-main ref (e.g. to verify
+  # a PR's merged tree) without waiting for a webhook to fire.
+  workflow_dispatch:
 
 permissions:
   contents: read
