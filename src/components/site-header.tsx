@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { navigation, seo, personal } from "@/config/portfolio";
 import { GitHubMark, Wordmark } from "@/components/github-mark";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 
+/** Everything a keyboard can reach inside the mobile header. */
+const FOCUSABLE = 'a[href], button:not([disabled])';
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const mobileBarRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   // Close the menu on navigation, adjusted during render rather than in an
   // effect so there is no extra commit.
@@ -23,17 +29,59 @@ export function SiteHeader() {
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      // Give the focus back to the button that opened the menu, so a
+      // keyboard user never loses their place on the page.
+      menuButtonRef.current?.focus();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Move focus into the menu when it opens, so the next Tab lands on the
+  // first link rather than somewhere further down the page.
+  useEffect(() => {
+    if (!open) return;
+    const first = mobileNavRef.current?.querySelector<HTMLElement>(FOCUSABLE);
+    first?.focus();
+  }, [open]);
+
+  /**
+   * Keep Tab inside the open menu.
+   *
+   * The mobile menu drops over the page, so tabbing out of it leaves the
+   * keyboard user on content they cannot see. The tab stop is the menu
+   * button plus everything inside the menu itself.
+   */
+  const onHeaderKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (!open || event.key !== "Tab") return;
+    const targets = [
+      ...Array.from(mobileBarRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+      ...Array.from(mobileNavRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+    ].filter((node) => node.tabIndex >= 0);
+    if (targets.length === 0) return;
+    const first = targets[0]!;
+    const last = targets[targets.length - 1]!;
+    if (event.shiftKey) {
+      if (document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[color-mix(in_oklab,var(--color-paper)_86%,transparent)] backdrop-blur-md">
+    <header
+      onKeyDown={onHeaderKeyDown}
+      className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[color-mix(in_oklab,var(--color-paper)_86%,transparent)] backdrop-blur-md"
+    >
       <div aria-hidden className="filmstrip h-[5px] w-full opacity-40" />
 
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
@@ -81,9 +129,10 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div ref={mobileBarRef} className="flex items-center gap-2 md:hidden">
           <ThemeSwitcher />
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={() => setOpen((v) => !v)}
             className="flex h-9 w-9 items-center justify-center border border-[var(--color-line)]"
@@ -97,7 +146,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div id="mobile-nav" className="border-t border-[var(--color-line)] md:hidden">
+        <div id="mobile-nav" ref={mobileNavRef} className="border-t border-[var(--color-line)] md:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col px-4 py-1 sm:px-6" aria-label="Mobile">
             {navigation.map((item) => (
               <Link

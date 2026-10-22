@@ -284,9 +284,15 @@
     background: color-mix(in oklab, var(--color-paper) 70%, #fff 6%);
   }
   .field:focus {
-    outline: none;
     border-color: var(--color-cobalt);
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-cobalt) 18%, transparent);
+  }
+  /* The border change above is the pointer affordance. A keyboard user also
+     needs the outline, which is the only indicator that survives a forced
+     colours mode. */
+  .field:focus-visible {
+    outline: 2px solid var(--color-cobalt);
+    outline-offset: 2px;
   }
   .field::placeholder {
     color: var(--color-ink-3);
@@ -329,6 +335,12 @@
   }
   .dial:focus-visible::-webkit-slider-thumb {
     background: var(--color-signal-2);
+  }
+  /* `appearance: none` removes the browser's own focus ring from a range
+     input, so the outline is drawn here instead. */
+  .dial:focus-visible {
+    outline: 2px solid var(--color-cobalt);
+    outline-offset: 2px;
   }
 
   .chip {

@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { projects, projectTags } from "@/config/portfolio";
+import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { ProjectCard } from "@/components/project-card";
 import { ProjectFilters } from "@/components/project-filters";
 import { Reveal } from "@/components/motion-primitives";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Projects",
   description: `Selected work, with the hard parts written down. ${projects.length} case studies.`,
-  alternates: { canonical: "/projects" },
-};
+  path: "/projects",
+});
 
 /** Pre-render the unfiltered list; any ?tag= is a client-side refinement. */
 export function generateStaticParams() {

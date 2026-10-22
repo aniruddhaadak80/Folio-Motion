@@ -17,6 +17,7 @@ import { LiveSpringPreview } from "@/components/live-spring-preview";
 import { CurveChart } from "@/components/curve-chart";
 import { ScoreMeter } from "@/components/score-meter";
 import { Magnetic, BENCH_SPRING } from "@/components/motion-primitives";
+import { nextRadioIndex, radioTabIndex } from "@/lib/keyboard";
 import type { MotionAnalysis, MotionParams, MotionSpec, MotionTarget } from "@/lib/types";
 
 const TARGETS: Array<{ value: MotionTarget; label: string; hint: string }> = [
@@ -26,6 +27,9 @@ const TARGETS: Array<{ value: MotionTarget; label: string; hint: string }> = [
   { value: "opacity", label: "opacity", hint: "compositor friendly" },
   { value: "blur", label: "blur", hint: "forces paint every frame" },
 ];
+
+/** The two motion models the lab can score. A single choice, so a radio group. */
+const MODEL_KINDS = ["spring", "bezier"] as const;
 
 const PRESETS: Array<{ name: string; target: MotionTarget; params: MotionParams }> = [
   {
@@ -130,6 +134,8 @@ export function Lab() {
   const [playToken, setPlayToken] = useState(0);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const idempotencyRef = useRef<string>("");
+  const modelButtonsRef = useRef<Array<HTMLButtonElement | null>>([]);
+  const targetButtonsRef = useRef<Array<HTMLButtonElement | null>>([]);
 
   const params: MotionParams = useMemo(
     () => (kind === "spring" ? { kind: "spring", ...spring } : { kind: "bezier", ...bezier }),
@@ -184,6 +190,31 @@ export function Lab() {
       setBezier({ x1: p.x1, y1: p.y1, x2: p.x2, y2: p.y2, durationMs: p.durationMs });
     }
   }, []);
+
+  /**
+   * Arrow keys move between the two motion models and select as they go, the
+   * way a native radio group behaves.
+   */
+  const onModelKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const next = nextRadioIndex(event.key, index, MODEL_KINDS.length);
+    if (next === null) return;
+    event.preventDefault();
+    const target = MODEL_KINDS[next];
+    if (!target) return;
+    setKind(target);
+    modelButtonsRef.current[next]?.focus();
+  };
+
+  /** The same arrow-key behaviour for the animated-property group. */
+  const onTargetKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const next = nextRadioIndex(event.key, index, TARGETS.length);
+    if (next === null) return;
+    event.preventDefault();
+    const target = TARGETS[next];
+    if (!target) return;
+    setTarget(target.value);
+    targetButtonsRef.current[next]?.focus();
+  };
 
   const save = useCallback(async () => {
     if (!name.trim()) {
@@ -248,15 +279,21 @@ export function Lab() {
             <h2 className="text-lg">Parameters</h2>
             <div
               className="flex border border-ink/20"
-              role="group"
+              role="radiogroup"
               aria-label="Motion model"
             >
-              {(["spring", "bezier"] as const).map((k) => (
+              {MODEL_KINDS.map((k, index) => (
                 <button
                   key={k}
+                  ref={(node) => {
+                    modelButtonsRef.current[index] = node;
+                  }}
                   type="button"
+                  role="radio"
                   onClick={() => setKind(k)}
-                  aria-pressed={kind === k}
+                  onKeyDown={(event) => onModelKeyDown(event, index)}
+                  aria-checked={kind === k}
+                  tabIndex={radioTabIndex(kind === k)}
                   className={`px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors ${
                     kind === k ? "bg-ink text-paper" : "text-ink-3 hover:text-ink"
                   }`}
@@ -366,13 +403,23 @@ export function Lab() {
 
           <div className="mt-6">
             <p className="label mb-2">Animated property</p>
-            <div className="flex flex-wrap gap-1.5">
-              {TARGETS.map((t) => (
+            <div
+              className="flex flex-wrap gap-1.5"
+              role="radiogroup"
+              aria-label="Animated property"
+            >
+              {TARGETS.map((t, index) => (
                 <button
                   key={t.value}
+                  ref={(node) => {
+                    targetButtonsRef.current[index] = node;
+                  }}
                   type="button"
+                  role="radio"
                   onClick={() => setTarget(t.value)}
-                  aria-pressed={target === t.value}
+                  onKeyDown={(event) => onTargetKeyDown(event, index)}
+                  aria-checked={target === t.value}
+                  tabIndex={radioTabIndex(target === t.value)}
                   title={t.hint}
                   className={`chip transition-colors ${
                     target === t.value ? "border-ink bg-ink text-paper" : "hover:border-ink"

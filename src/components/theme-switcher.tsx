@@ -7,11 +7,20 @@
  * layout.tsx applies it before first paint, so there is no flash of the wrong
  * palette on reload.
  *
+ * The three palettes are one control, so they are a toolbar with a roving
+ * tab stop: Tab reaches the group once and the arrow keys move between the
+ * palettes. See `src/lib/keyboard.ts` for the shared key handling.
+ *
+ * The buttons keep their `button` role rather than becoming radios. The
+ * browser tests drive the switcher by `role="button"`, and a toolbar of
+ * pressed buttons is the documented pattern for a row of toggles.
+ *
  * To add a palette: add a `[data-theme="name"]` block to globals.css, then add
  * it to THEMES below.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { nextRadioIndex, radioTabIndex } from "@/lib/keyboard";
 
 export const THEMES = [
   { id: "bench", label: "Bench", swatch: ["#f4f1e8", "#241b2f", "#c8f542"] },
@@ -39,6 +48,7 @@ export const themeInitScript = `
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState<ThemeId>("bench");
   const [mounted, setMounted] = useState(false);
+  const buttonsRef = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
     // The inline script in layout.tsx has already set data-theme before paint.
@@ -65,20 +75,40 @@ export function ThemeSwitcher() {
     }
   };
 
+  /**
+   * Arrow keys move between the palettes and pick as they go, so the whole
+   * switcher is one tab stop. The key event is swallowed so the page does not
+   * scroll sideways at the same time.
+   */
+  const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const next = nextRadioIndex(event.key, index, THEMES.length);
+    if (next === null) return;
+    event.preventDefault();
+    const target = THEMES[next];
+    if (!target) return;
+    choose(target.id);
+    buttonsRef.current[next]?.focus();
+  };
+
   return (
     <div
-      role="group"
+      role="toolbar"
       aria-label="Colour theme"
       className="flex items-center gap-1 border border-[var(--color-line)] p-0.5"
     >
-      {THEMES.map((t) => {
+      {THEMES.map((t, index) => {
         const active = mounted && theme === t.id;
         return (
           <button
             key={t.id}
+            ref={(node) => {
+              buttonsRef.current[index] = node;
+            }}
             type="button"
-            onClick={() => choose(t.id)}
             aria-pressed={active}
+            tabIndex={radioTabIndex(theme === t.id)}
+            onClick={() => choose(t.id)}
+            onKeyDown={(event) => onKeyDown(event, index)}
             title={`${t.label} theme`}
             className="group relative flex h-7 w-7 items-center justify-center transition-transform hover:scale-110"
           >
