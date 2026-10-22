@@ -89,6 +89,10 @@ export function SiteFooter() {
                     {...(social.href.startsWith("http")
                       ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
+                    // The visible label is the accessible name here, so the
+                    // description is a title: extra context for a mouse user
+                    // without changing what a screen reader announces.
+                    title={social.description}
                     className="font-mono text-xs text-[var(--color-ink-2)] transition-colors hover:text-[var(--color-ink)]"
                   >
                     {social.label}
