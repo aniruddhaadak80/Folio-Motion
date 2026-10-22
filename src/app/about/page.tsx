@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { personal } from "@/config/portfolio";
+import { pageMetadata } from "@/lib/seo";
 import { Services, Skills } from "@/components/sections/about";
 import { Contact } from "@/components/sections/contact";
 import { PageHeader } from "@/components/page-header";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: personal.shortBio,
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
