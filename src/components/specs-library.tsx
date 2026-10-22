@@ -237,12 +237,18 @@ export function SpecsLibrary() {
                           onClick={() => setParam("spec", isSelected ? null : spec.id)}
                           className="btn-ghost !px-2.5 !py-1 !text-[11px]"
                           aria-pressed={isSelected}
+                          // A list of cards would otherwise offer a row of
+                          // buttons all called "Compare" and all called
+                          // "Delete". The spec name says which one. The
+                          // visible label stays inside the accessible name.
+                          aria-label={`${isSelected ? "Hide score of" : "Compare"} ${spec.name}`}
                         >
                           {isSelected ? "Hide score" : "Compare"}
                         </button>
                         <Link
                           href={`/specs/${spec.id}`}
                           className="btn-ghost !px-2.5 !py-1 !text-[11px]"
+                          aria-label={`Open ${spec.name}`}
                         >
                           Open
                         </Link>
@@ -253,6 +259,7 @@ export function SpecsLibrary() {
                               onClick={() => remove(spec.id)}
                               disabled={deleting === spec.id}
                               className="btn-bench !bg-ruby !border-ruby !px-2.5 !py-1 !text-[11px]"
+                              aria-label={`Confirm delete of ${spec.name}`}
                             >
                               {deleting === spec.id ? "…" : "Confirm"}
                             </button>
@@ -260,6 +267,7 @@ export function SpecsLibrary() {
                               type="button"
                               onClick={() => setConfirming(null)}
                               className="btn-ghost !px-2.5 !py-1 !text-[11px]"
+                              aria-label={`Cancel deleting ${spec.name}`}
                             >
                               Cancel
                             </button>
@@ -269,6 +277,7 @@ export function SpecsLibrary() {
                             type="button"
                             onClick={() => setConfirming(spec.id)}
                             className="btn-ghost !px-2.5 !py-1 !text-[11px] !text-ruby"
+                            aria-label={`Delete ${spec.name}`}
                           >
                             Delete
                           </button>
@@ -283,7 +292,10 @@ export function SpecsLibrary() {
 
           {/* Comparison panel */}
           <aside className="lg:sticky lg:top-20 lg:self-start">
-            <div className="panel panel-raised p-5">
+            {/* The panel swaps between an instruction, a spinner and a score.
+                A live region says so out loud instead of leaving the change
+                to be noticed. */}
+            <div className="panel panel-raised p-5" aria-live="polite">
               <h2 className="text-lg">Score detail</h2>
               <AnimatePresence mode="wait">
                 {!selected && (
