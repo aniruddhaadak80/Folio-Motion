@@ -29,6 +29,7 @@ import type {
   SpringParams,
 } from "./types";
 
+/** Version of the deterministic engine used in persisted analyses and API responses. */
 export const ENGINE_VERSION = "2026.2.0";
 
 /** Fixed integration timestep in seconds. 240Hz is well above frame rate. */
@@ -40,6 +41,10 @@ const MAX_SECONDS = 6;
 /** Positions are considered "at rest" when within this fraction of the target. */
 const REST_THRESHOLD = 0.005;
 
+/**
+ * Relative weights used to turn each measured quality factor into a score.
+ * The values add up to {@link TOTAL_WEIGHT}.
+ */
 export const FACTOR_WEIGHTS = {
   settle: 30,
   overshoot: 25,
@@ -48,6 +53,7 @@ export const FACTOR_WEIGHTS = {
   accessibility: 10,
 } as const;
 
+/** Sum of all factor weights; kept as a named export for score consumers. */
 export const TOTAL_WEIGHT =
   FACTOR_WEIGHTS.settle +
   FACTOR_WEIGHTS.overshoot +
@@ -67,6 +73,12 @@ const COMPOSITOR_FRIENDLY: ReadonlySet<MotionTarget> = new Set<MotionTarget>([
   "opacity",
 ]);
 
+/**
+ * Check whether animating a target can stay on the compositor in a browser.
+ *
+ * @param target CSS motion target to evaluate.
+ * @returns `true` for universally compositor-friendly targets.
+ */
 export function isCompositorFriendly(target: MotionTarget): boolean {
   return COMPOSITOR_FRIENDLY.has(target);
 }
@@ -168,7 +180,14 @@ function integrateSpring(params: SpringParams): SpringResult {
 }
 
 /**
- * Solve a 1-D cubic bezier easing function at progress t, exactly as CSS does.
+ * Solve a 1-D cubic bezier easing function at progress `t`, exactly as CSS does.
+ *
+ * @param x1 X coordinate of the first control point, in the `[0, 1]` range.
+ * @param y1 Y coordinate of the first control point.
+ * @param x2 X coordinate of the second control point, in the `[0, 1]` range.
+ * @param y2 Y coordinate of the second control point.
+ * @param t Input progress to ease, clamped by the endpoint guards.
+ * @returns Eased progress at `t`.
  */
 export function cubicBezierEase(x1: number, y1: number, x2: number, y2: number, t: number): number {
   if (t <= 0) return 0;
@@ -263,7 +282,12 @@ function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n));
 }
 
-/** Clamp any user-supplied params into a physically sane range. */
+/**
+ * Clamp any user-supplied motion parameters into a physically sane range.
+ *
+ * @param params Raw spring or bezier parameters supplied by a caller.
+ * @returns A new parameter object with every numeric field constrained.
+ */
 export function normalizeParams(params: MotionParams): MotionParams {
   if (params.kind === "spring") {
     return {
@@ -306,6 +330,11 @@ function classify(
 /**
  * The single source of truth for motion quality. Used by the UI, the REST
  * engine endpoint, the MCP tool, and the tests.
+ *
+ * @param params Spring or bezier parameters to analyze.
+ * @param target CSS motion target whose accessibility impact is scored.
+ * @param specId Optional identifier copied into the resulting analysis.
+ * @returns The measured trace, factor scores, weighted total, and classification.
  */
 export function analyzeMotion(params: MotionParams, target: MotionTarget, specId: string | null = null): MotionAnalysis {
   const safe = normalizeParams(params);
