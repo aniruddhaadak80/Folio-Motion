@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Github, Linkedin, Twitter, Mail, MapPin, Download } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Download } from "lucide-react";
 import { heroActions, heroStats, personal, socials } from "@/config/portfolio";
 import {
   CountUp,
@@ -12,13 +12,14 @@ import {
   SplitText,
   Typewriter,
 } from "@/components/motion-primitives";
-import { GitHubMark } from "@/components/github-mark";
+import { GitHubMark, LinkedinMark, XMark } from "@/components/github-mark";
+import type { ComponentType } from "react";
 
-const ICONS: Record<string, typeof Github> = {
-  GitHub: Github,
-  LinkedIn: Linkedin,
-  X: Twitter,
-  DEV: Github,
+const ICONS: Record<string, ComponentType<{ size?: number }>> = {
+  GitHub: GitHubMark,
+  LinkedIn: LinkedinMark,
+  X: XMark,
+  DEV: GitHubMark,
   Email: Mail,
 };
 

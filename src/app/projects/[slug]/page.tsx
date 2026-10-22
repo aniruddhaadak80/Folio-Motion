@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, ExternalLink, Github, Star, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ExternalLink, Star, CheckCircle2 } from "lucide-react";
 import { getProject, projects } from "@/config/portfolio";
 import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "@/components/motion-primitives";
 import { ProjectCard } from "@/components/project-card";
+import { GitHubMark } from "@/components/github-mark";
 
 /** Pre-render every project page at build time. */
 export function generateStaticParams() {
@@ -85,7 +86,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   rel="noopener noreferrer"
                   className="btn-ghost"
                 >
-                  <Github size={14} /> Source code
+                  <GitHubMark size={14} /> Source code
                 </a>
               )}
             </div>
