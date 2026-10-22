@@ -167,14 +167,28 @@ export function LiveSpringPreview({ params, target }: { params: MotionParams; ta
   const glyph =
     target === "opacity" ? "α" : target === "scale" ? "S" : target === "rotate" ? "R" : target === "blur" ? "B" : "T";
 
+  /**
+   * What the moving box is doing, in words.
+   *
+   * The preview is pure motion, so without this a screen reader has nothing
+   * to say about the thing the whole page exists to show.
+   */
+  const motionLabel =
+    params.kind === "spring"
+      ? `A ${target} preview driven by a spring. It ${normalized >= 1 ? "has reached the target" : "is moving towards the target"} at ${elapsed.toFixed(2)} seconds.`
+      : `A ${target} preview driven by a cubic bezier. It ${normalized >= 1 ? "has reached the target" : "is moving towards the target"} at ${elapsed.toFixed(2)} seconds.`;
+
   return (
     <div>
       <div className="relative h-32 overflow-hidden border border-ink/15 bg-paper/40">
-        <div className="absolute inset-x-0 top-1/2 h-px bg-ink/20" />
-        <div className="absolute left-3 top-1/2 h-3 w-px -translate-y-1/2 bg-ink/30" />
-        <div className="absolute right-3 top-1/2 h-3 w-px -translate-y-1/2 bg-ink/30" />
+        {/* The guide lines are decoration; the box below carries the meaning. */}
+        <div aria-hidden className="absolute inset-x-0 top-1/2 h-px bg-ink/20" />
+        <div aria-hidden className="absolute left-3 top-1/2 h-3 w-px -translate-y-1/2 bg-ink/30" />
+        <div aria-hidden className="absolute right-3 top-1/2 h-3 w-px -translate-y-1/2 bg-ink/30" />
 
         <div
+          role="img"
+          aria-label={motionLabel}
           className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center border border-ink bg-signal font-mono text-[10px] text-ink"
           style={style}
         >
@@ -185,13 +199,17 @@ export function LiveSpringPreview({ params, target }: { params: MotionParams; ta
           type="button"
           onClick={play}
           className="absolute bottom-2 right-2 rounded-sm border border-ink/25 bg-paper/80 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-ink transition-colors hover:border-ink hover:bg-signal focus-visible:border-ink"
-          aria-label="Replay the motion preview"
+          // The accessible name has to contain the visible label, so it tracks
+          // the button's own state rather than describing one of them.
+          aria-label={playing ? "Preview is playing — replay it" : "Replay the motion preview"}
         >
           {playing ? "playing" : "replay"}
         </button>
       </div>
 
-      <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-ink-3">
+      {/* The readout changes on every frame, so it is for the eye only. The
+          phase of the preview is announced separately, once. */}
+      <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-ink-3" aria-hidden>
         <span>t {elapsed.toFixed(3)}s</span>
         <span>
           x {normalized >= 0 ? "+" : ""}
@@ -199,6 +217,12 @@ export function LiveSpringPreview({ params, target }: { params: MotionParams; ta
         </span>
         <span>{params.kind}</span>
       </div>
+
+      <p role="status" className="sr-only">
+        {playing
+          ? `Preview playing: ${params.kind} ${target}.`
+          : `Preview finished: ${params.kind} ${target}.`}
+      </p>
     </div>
   );
 }

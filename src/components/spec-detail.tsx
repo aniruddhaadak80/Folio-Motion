@@ -270,6 +270,11 @@ export function SpecDetail({ id }: { id: string }) {
                 </button>
               ))}
             </div>
+            {/* The button text says "Downloaded", but a screen reader user
+                who is not on that button would not hear it. */}
+            <p role="status" className="sr-only">
+              {copied ? `Downloaded ${FORMATS.find((f) => f.id === copied)?.label ?? "the file"}.` : ""}
+            </p>
           </section>
 
           <section className="panel p-5" aria-label="Danger zone">
@@ -302,6 +307,13 @@ export function SpecDetail({ id }: { id: string }) {
                 </button>
               )}
             </div>
+            {/* Deleting is a two-step action, so the confirmation step has to
+                be announced as well as shown. */}
+            <p role="status" className="sr-only">
+              {confirming
+                ? `Confirm deleting ${spec.name}. The record is tombstoned, not erased.`
+                : ""}
+            </p>
           </section>
         </div>
 

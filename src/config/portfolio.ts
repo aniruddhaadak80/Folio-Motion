@@ -53,8 +53,19 @@ export const personal = {
   ],
   /** Your photo. Drop a file in public/images/ and point at it. */
   avatar: "/images/avatar.svg",
+  /**
+   * Alternative text for the photo above.
+   *
+   * A screen reader announces this instead of the image. Describe what the
+   * picture shows, not what it is called: "Portrait of Aniruddha Adak at a
+   * workbench" beats "avatar". If the photo is purely decorative and the
+   * name is already on screen, an empty string is the right answer.
+   */
+  avatarAlt: "Portrait of Aniruddha Adak, Full-Stack Developer",
   /** Optional second photo shown in the About page. */
   portrait: "/images/portrait.svg",
+  /** Alternative text for the portrait above. Same rule as `avatarAlt`. */
+  portraitAlt: "Portrait of Aniruddha Adak",
   /** A few words shown in the About section. */
   shortBio:
     "I design and build web products end to end — from the physics of an animation to the query behind it. I care about interfaces that feel right, not just render.",
@@ -89,14 +100,47 @@ export interface SocialLink {
   href: string;
   /** Shown in the hero and the footer. */
   primary?: boolean;
+  /**
+   * The full name of the link, for the places where only an icon is shown.
+   *
+   * "GitHub" on its own tells a screen reader user which platform the link
+   * goes to but not whose account it is. "GitHub profile of Aniruddha Adak"
+   * says both. The label is still the visible text, so the description
+   * always starts with it.
+   */
+  description?: string;
 }
 
 export const socials: SocialLink[] = [
-  { label: "GitHub", href: "https://github.com/aniruddhaadak80", primary: true },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/aniruddhaadak80", primary: true },
-  { label: "X", href: "https://x.com/aniruddhaadak80", primary: true },
-  { label: "DEV", href: "https://dev.to/aniruddhaadak", primary: true },
-  { label: "Email", href: `mailto:${personal.email}` },
+  {
+    label: "GitHub",
+    href: "https://github.com/aniruddhaadak80",
+    primary: true,
+    description: "GitHub profile of Aniruddha Adak",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/aniruddhaadak80",
+    primary: true,
+    description: "LinkedIn profile of Aniruddha Adak",
+  },
+  {
+    label: "X",
+    href: "https://x.com/aniruddhaadak80",
+    primary: true,
+    description: "X profile of Aniruddha Adak",
+  },
+  {
+    label: "DEV",
+    href: "https://dev.to/aniruddhaadak",
+    primary: true,
+    description: "DEV Community profile of Aniruddha Adak",
+  },
+  {
+    label: "Email",
+    href: `mailto:${personal.email}`,
+    description: "Email Aniruddha Adak",
+  },
 ];
 
 /** Buttons in the hero. The first one is styled as the primary action. */
@@ -110,6 +154,13 @@ export const heroActions: ReadonlyArray<{ label: string; href: string; primary?:
 /*  Numbers shown in the hero                                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The four headline numbers.
+ *
+ * The `hint` is not decoration: it is read out after the number, so "4+
+ * Years building" is followed by "Shipping production web apps" rather than
+ * a tooltip that only a mouse user ever sees.
+ */
 export const heroStats = [
   { value: 4, suffix: "+", label: "Years building", hint: "Shipping production web apps" },
   { value: 30, suffix: "+", label: "Projects shipped", hint: "Products, not demos" },

@@ -178,6 +178,10 @@ export function AgentConsole() {
               onClick={() => invoke(call)}
               disabled={busy}
               title={call.description}
+              // A title attribute is a tooltip, not a description: it is not
+              // announced on touch and it disappears on the first click. The
+              // real description is a paragraph next to the button.
+              aria-describedby={`tool-${call.id}-description`}
               className="btn-ghost disabled:opacity-50"
             >
               {call.label}
@@ -187,6 +191,13 @@ export function AgentConsole() {
             {busy ? "running…" : "Run all in order"}
           </button>
         </div>
+        <ul className="mt-3 space-y-1">
+          {CALLS.map((call) => (
+            <li key={call.id} id={`tool-${call.id}-description`} className="sr-only">
+              {call.description}
+            </li>
+          ))}
+        </ul>
         <p className="mt-3 text-xs text-ink-3">
           <strong>save_spec</strong> is the mutating tool. It writes through the identical service
           layer the browser uses and appends a sealed audit event, so an agent cannot bypass the
@@ -205,7 +216,7 @@ export function AgentConsole() {
             </p>
           </div>
         ) : (
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 space-y-4" aria-live="polite">
             {entries.map((entry, i) => (
               <motion.article
                 key={`${entry.call.id}-${i}-${entry.ms}`}
@@ -275,13 +286,21 @@ export function AgentConsole() {
         <p className="mt-2 text-xs text-ink-3">
           The endpoint is a plain HTTP JSON-RPC 2.0 server, so any MCP client can drive it.
         </p>
+        <label htmlFor="raw-request" className="label">
+          request body
+        </label>
         <textarea
+          id="raw-request"
           className="field mt-3 h-40 resize-y font-mono text-[11px]"
           value={raw}
           onChange={(e) => setRaw(e.target.value)}
           placeholder='{ "jsonrpc": "2.0", "id": 1, "method": "tools/list" }'
           spellCheck={false}
+          aria-describedby="raw-request-help"
         />
+        <p id="raw-request-help" className="mt-2 text-xs text-ink-3">
+          A JSON-RPC 2.0 request object. The response is rendered above.
+        </p>
         <div className="mt-2 flex flex-wrap gap-2">
           <button
             type="button"
