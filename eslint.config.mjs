@@ -12,6 +12,8 @@ const eslintConfig = [
       "node_modules/**",
       "playwright-report/**",
       "test-results/**",
+      // Written by `npm run test:coverage`.
+      "coverage/**",
       "next-env.d.ts",
       "e2e/**",
     ],

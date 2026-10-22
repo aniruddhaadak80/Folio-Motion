@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, ExternalLink, Github, Star, CheckCircle2 } from "lucide-react";
 import { getProject, projects } from "@/config/portfolio";
+import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "@/components/motion-primitives";
 import { ProjectCard } from "@/components/project-card";
 
@@ -21,16 +22,12 @@ export async function generateMetadata({
   const project = getProject(slug);
   if (!project) return { title: "Project not found" };
 
-  return {
+  return pageMetadata({
     title: project.title,
     description: project.summary,
-    alternates: { canonical: `/projects/${project.slug}` },
-    openGraph: {
-      title: project.title,
-      description: project.summary,
-      images: [{ url: project.image }],
-    },
-  };
+    path: `/projects/${project.slug}`,
+    type: "article",
+  });
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {

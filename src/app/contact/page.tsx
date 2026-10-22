@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { personal } from "@/config/portfolio";
+import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { Contact } from "@/components/sections/contact";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: `Get in touch with ${personal.name}. I reply to everything, usually within a day.`,
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (
