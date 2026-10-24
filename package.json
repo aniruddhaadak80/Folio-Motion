@@ -32,7 +32,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "tailwind-merge": "3.7.0",
-    "zod": "4.6.5"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
@@ -51,5 +51,9 @@
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vitest": "5.0.5"
+  },
+  "overrides": {
+    "vite": "^8.3.3",
+    "source-map-js": "^1.2.2"
   }
 }
