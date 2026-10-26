@@ -22,7 +22,7 @@
     "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
-    "@electric-sql/pglite": "0.5.8",
+    "@electric-sql/pglite": "0.5.11",
     "@neondatabase/serverless": "1.2.0",
     "clsx": "2.1.1",
     "framer-motion": "14.4.0",
