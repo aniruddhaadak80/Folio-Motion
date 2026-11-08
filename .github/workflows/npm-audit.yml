@@ -52,10 +52,12 @@ jobs:
         # --package-lock-only updates the lockfile and nothing else, so the
         # working tree stays reviewable: the diff is the dependency graph and
         # nothing else.
-        # --audit-level=critical matches the CI gate in ci.yml: npm audit
-        # exits non-zero while unfixable moderate findings remain, so without
-        # it the run fails and never opens a pull request.
-        run: npm audit fix --package-lock-only --audit-level=critical
+        # `|| true`: npm exits 1 when advisories remain after the fix. That is
+        # expected for major-only findings (e.g. minimatch via the dev-only
+        # eslint-config-next chain) and must not fail the sweep before the
+        # changed-check and PR steps run. The severity gate lives in the CI
+        # workflow, not here: the sweep reports, it does not block.
+        run: npm audit fix --package-lock-only || true
 
       - name: Check whether anything changed
         id: fix
