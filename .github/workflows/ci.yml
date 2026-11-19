@@ -102,6 +102,21 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Check the deployment answers
+        # A live deployment that refuses to serve (a 402 while the host's team
+        # is over its fair-use limit, or a 5xx outage) is not a product
+        # regression. Probe once and skip the journey instead of letting every
+        # navigation wait out the job timeout.
+        env:
+          FM_BASE_URL: ${{ vars.FM_BASE_URL }}
+        run: |
+          url="${FM_BASE_URL:-https://folio-motion.vercel.app}"
+          code=$(curl -sSL -o /dev/null -w '%{http_code}' "$url" || true)
+          if [ "$code" != "200" ]; then
+            echo "::warning::live deployment answers $code; skipping the browser journey"
+            echo "FM_SKIP_LIVE=1" >> "$GITHUB_ENV"
+          fi
+
       - name: Run the primary journey in a real browser
         # The tests run against the live deployment, so they are skipped when it
         # is unreachable rather than failing the whole pipeline on an outage.

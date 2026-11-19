@@ -14,6 +14,16 @@ import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
 
 const consoleErrors: string[] = [];
 
+// The browser suite drives the deployed site. When the deployment host refuses
+// to serve (for example a 402 while the Vercel team is over its fair-use
+// limit), every navigation lands on an error page and the run burns its whole
+// timeout waiting for selectors. The workflow probes the URL first and sets
+// FM_SKIP_LIVE, so the job reports a skip instead of a 25-minute timeout.
+test.skip(
+  process.env.FM_SKIP_LIVE === "1",
+  "live deployment is unavailable; browser journey skipped",
+);
+
 function trackConsole(page: Page): void {
   page.on("console", (msg: ConsoleMessage) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());

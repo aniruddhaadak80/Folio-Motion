@@ -13,6 +13,13 @@ import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
 
 const consoleErrors: string[] = [];
 
+// See journey.spec.ts: the workflow sets FM_SKIP_LIVE when the deployed site
+// answers with a refusal, so the suite reports a skip instead of timing out.
+test.skip(
+  process.env.FM_SKIP_LIVE === "1",
+  "live deployment is unavailable; browser journey skipped",
+);
+
 function trackConsole(page: Page): void {
   page.on("console", (msg: ConsoleMessage) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());
